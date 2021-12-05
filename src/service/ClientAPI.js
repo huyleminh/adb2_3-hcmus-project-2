@@ -1,15 +1,21 @@
 import axios from "axios";
+import AuthService from "./AuthService";
 
 const ClientAPI = axios.create({
     baseURL: process.env.REACT_APP_API_URL,
-    headers: {
-        "Content-Type": "application/json",
-    },
+    // headers: {
+    //     "Content-Type": "application/json",
+    // },
 });
 
 ClientAPI.interceptors.request.use(
     function (config) {
         // Do something before request is sent
+        const token = AuthService.getUserToken();
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+
         return config;
     },
     function (error) {
