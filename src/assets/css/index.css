@@ -59,3 +59,123 @@ button {
 
 .app-footer {
 }
+
+.custom-site-dashboard {
+	width: 100%;
+	height: 100%;
+	min-height: 100vh;
+}
+
+.custom-site-content-header {
+	background-color: #fff;
+	padding: 0;
+	height: 66px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.logo,
+.logo-collapsed {
+	height: 50px;
+	margin: 16px;
+	background: rgba(255, 255, 255, 0.3);
+	color: white;
+	text-align: center;
+	font-size: 2em;
+	font-weight: 600;
+	transition: all 0.4s;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.logo-collapsed {
+	font-size: 0.8em;
+}
+
+.custom-site-content .trigger {
+	cursor: pointer;
+	transition: color 0.3s;
+	padding: 0 28px;
+}
+
+.custom-site-content .trigger svg {
+	font-size: 25px !important;
+}
+
+.custom-site-content .trigger:hover {
+	color: #2f90ff;
+}
+
+.custom-site-main {
+	margin: 30px;
+	height: 100%;
+	background: #fff;
+}
+
+.custom-site-content__user {
+	margin-left: auto;
+	padding-right: 100px;
+	position: relative;
+
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	height: 100%;
+}
+
+.custom-site-content__user #dashboard-user {
+	width: 50px;
+	height: 50px;
+	display: flex;
+
+	align-items: center;
+	justify-content: center;
+	color: #1890ff;
+
+	cursor: pointer;
+	background-color: #f1f1f1;
+	border-radius: 50%;
+}
+
+.custom-site-content__user #dashboard-user:hover {
+	color: #0a87fc;
+}
+
+.custom-site-content__user .custom-site-content__dropdown {
+	display: none;
+	position: absolute;
+	min-width: 100px;
+	min-height: 50px;
+	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+	z-index: 10;
+	top: 60px;
+	left: 0px;
+}
+
+.custom-site-content__user .custom-site-content__dropdown span {
+	color: #1890ff;
+	padding: 10px 15px;
+	width: 100px;
+	height: 50px;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+	cursor: pointer;
+	font-weight: 600;
+	transition: all 0.3s ease;
+}
+
+.custom-site-content__user .custom-site-content__dropdown span:hover {
+	background: #f1f1f1;
+	color: #0a87fc;
+}
+
+.custom-site-content__user:hover .custom-site-content__dropdown {
+	background: #fff;
+	display: flex;
+}
