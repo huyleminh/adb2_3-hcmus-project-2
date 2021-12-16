@@ -1,0 +1,68 @@
+.ant-menu-overflow {
+    justify-content: center;
+}
+
+.card .ant-card-cover {
+    position: relative;
+}
+
+.ant-card {
+    border-radius: 10px;
+}
+
+.ant-card-body {
+    cursor: auto;
+}
+
+.mask {
+    opacity: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    color: white;
+    transition: all 0.3s;
+}
+
+.mask:hover {
+    background-color: rgba(0, 0, 0, 0.459);
+    opacity: 1;
+    transition: all 0.3s;
+}
+
+.mask-text {
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    min-height: 200px;
+    align-items: center;
+}
+
+.addToCart-btn {
+    background-color: #1890ff;
+    color: white;
+    padding: 7px;
+    width: auto;
+    flex-grow: 1;
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+
+.addToCart-btn:hover {
+    background-color: #003bfd;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.btn-area {
+    display: flex;
+}

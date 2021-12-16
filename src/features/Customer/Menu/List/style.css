@@ -1,0 +1,42 @@
+.page_wrapper {
+    width: 100%;
+    min-height: 920px;
+
+    height: auto;
+}
+
+.filter_bar {
+    display: flex;
+    margin: 10px 50px 0px 50px;
+
+    justify-content: space-between;
+}
+
+.filter-area {
+    display: flex;
+}
+
+.filter-area > * {
+    display: flex;
+    margin: 0px 5px;
+}
+
+.filter-area > span {
+    margin: 5px 10px 0px 10px;
+}
+
+.menu_wrapper {
+    display: flex;
+    margin: 10px 50px;
+}
+
+.pagination {
+    display: flex;
+    margin: 10px 0px 20px 0px;
+    justify-content: center;
+}
+
+.search {
+    min-width: 400px;
+    display: flex;
+}
