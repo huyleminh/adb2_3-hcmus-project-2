@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import NumberFormat from "react-number-format";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import "./style.css";
+import "./styles.css";
 
 ProductCard.propTypes = {
     detail: PropTypes.shape({
@@ -89,11 +89,17 @@ function ProductCard(props) {
                 </p>
                 <div className="btn-area">
                     <button className="addToCart-btn" onClick={addToCart}>
-                        <FontAwesomeIcon
-                            style={{ margin: "0px 5px 0px 0px" }}
-                            icon={faShoppingCart}
-                        />
-                        Thêm vào giỏ hàng
+                        {isProcessing ? (
+                            <div className="inside-btn">
+                                <Spin indicator={<LoadingOutlined spin />} />
+                                <span>Đang xử lý</span>
+                            </div>
+                        ) : (
+                            <div className="inside-btn">
+                                <FontAwesomeIcon icon={faShoppingCart} />
+                                <span>Thêm vào giỏ hàng</span>
+                            </div>
+                        )}
                     </button>
                 </div>
             </Card>

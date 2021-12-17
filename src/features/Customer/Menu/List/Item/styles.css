@@ -66,3 +66,8 @@
 .btn-area {
     display: flex;
 }
+
+.inside-btn > * {
+    margin: 0px 5px;
+    color: white;
+}
