@@ -1,0 +1,49 @@
+.content {
+    margin: 0px 50px 30px 50px;
+    min-height: 500px;
+    display: flex;
+}
+
+.image-area {
+    display: flex;
+    justify-content: center;
+    align-self: center;
+    width: 50%;
+}
+
+.image-area > img {
+    width: 65%;
+    height: auto;
+    border-radius: 10px;
+}
+
+.information {
+    padding: 50px 20px;
+    border-radius: 10px;
+    background-color: white;
+}
+
+.cart-btn {
+    background-color: #1890ff;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+
+.cart-btn:hover {
+    background-color: #003bfd;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.button-area {
+    display: flex;
+    margin: 0px;
+    margin-top: 20px;
+    justify-content: flex-end;
+}
+
+.information {
+    width: 50%;
+}

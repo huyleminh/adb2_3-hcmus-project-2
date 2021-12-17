@@ -1,7 +1,8 @@
-import { Divider, Input, Pagination, Row, Select } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
+import { Divider, Input, Pagination, Row, Select, Spin } from "antd";
 import React, { useEffect, useState } from "react";
 import ProductCard from "./Item/index";
-import "./style.css";
+import "./styles.css";
 
 ViewListFeature.propTypes = {};
 
@@ -14,13 +15,11 @@ const MAX_PER_PAGE = 12;
 function ViewListFeature(props) {
     const [isLoading, setIsLoading] = useState(false);
 
-    const [isProcessing, setIsProcessing] = useState(false);
-
     const [basicSortBy, setBasicSortBy] = useState(0);
 
     const [catList, setCatList] = useState([]);
 
-    const [sortByCat, setSortByCat] = useState([]);
+    const [sortByCat, setSortByCat] = useState(0);
 
     const [pagination, setPagination] = useState({ page: 1, total: 40 });
 
@@ -52,6 +51,11 @@ function ViewListFeature(props) {
 
     const handleChangeBasicSort = (value) => {
         setBasicSortBy(value);
+        setIsLoading(true);
+
+        //handle sort here
+
+        setIsLoading(false);
     };
 
     const handleChangeSortByCat = (value) => {
@@ -72,7 +76,7 @@ function ViewListFeature(props) {
                 <div className="search">
                     <Search
                         placeholder="Nhập tên sản phẩm để tìm kiếm"
-                        loading={isProcessing}
+                        loading={isLoading}
                         enterButton
                         onSearch={searchItem}
                     />
@@ -80,6 +84,7 @@ function ViewListFeature(props) {
                 <div className="filter-area">
                     <span>Bộ lọc</span>
                     <Select
+                        disabled={isLoading}
                         value={basicSortBy}
                         style={{ width: 150 }}
                         onChange={handleChangeBasicSort}
@@ -93,6 +98,7 @@ function ViewListFeature(props) {
                         })}
                     </Select>
                     <Select
+                        disabled={isLoading}
                         value={catList}
                         style={{ width: 150 }}
                         onChange={handleChangeSortByCat}
@@ -110,15 +116,27 @@ function ViewListFeature(props) {
             </div>
             <Divider>Sản phẩm</Divider>
             <div className="menu_wrapper">
-                <Row gutter={[48, 48]} justify="center">
-                    {data.map((record) => {
-                        return <ProductCard detail={record} key={record.productId} span={4} />;
-                    })}
-                </Row>
+                {isLoading ? (
+                    <div className="loading">
+                        <Spin
+                            tip="Đang tải dữ liệu"
+                            indicator={
+                                <LoadingOutlined style={{ fontSize: 100, margin: 50 }} spin />
+                            }
+                        />
+                    </div>
+                ) : (
+                    <Row gutter={[48, 48]} justify="center">
+                        {data.map((record) => {
+                            return <ProductCard detail={record} key={record.productId} span={4} />;
+                        })}
+                    </Row>
+                )}
             </div>
             <Divider>Trang</Divider>
             <div className="pagination">
                 <Pagination
+                    disabled={isLoading}
                     current={pagination.page}
                     onChange={changePagination}
                     pageSize={MAX_PER_PAGE}
