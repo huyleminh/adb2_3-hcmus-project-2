@@ -1,0 +1,43 @@
+.table-area {
+    margin: 0px 50px;
+}
+
+.floating-ribbon {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.checkout {
+    display: flex;
+    height: 70px;
+    margin: 0px 50px;
+    padding: 0px 5px 0px 15px;
+    background-color: #f0f2f5;
+    border-radius: 0px 0px 0px 10px;
+}
+
+.checkout > p {
+    line-height: 70px;
+    font-size: 1.1em;
+}
+
+.checkout > * {
+    margin: 0px 10px;
+}
+
+.checkout-btn {
+    background-color: #1890ff;
+    color: white;
+    border-radius: 5px;
+    margin: 15px 5px;
+    padding: 7px;
+    transition: all 0.3s;
+    font-size: 1.1em;
+}
+
+.checkout-btn:hover {
+    background-color: #003bfd;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
