@@ -29,6 +29,8 @@ function ProductDetail(props) {
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum a vestibulum ipsum. Ut eget pulvinar orci, at pretium ex. Donec volutpat ligula lacus, id tincidunt enim sagittis sed. Cras vestibulum efficitur lobortis. Integer justo felis, imperdiet vitae elit et, ultricies ornare nibh. Fusce euismod nunc eros, id blandit justo maximus eu. Vestibulum gravida vulputate turpis vehicula feugiat. Donec ullamcorper, eros in ornare convallis, lectus leo pharetra turpis, sit amet aliquam lectus neque sed ipsum.",
         };
 
+        document.title = testData.productName;
+
         setIsLoading(true);
         //fetch data here
         setData(testData);
@@ -49,7 +51,7 @@ function ProductDetail(props) {
                     onBack={() => {
                         history.push("/menu/categories");
                     }}
-                    title={data.productName}
+                    title="Về trang sản phẩm"
                 />
             </div>
             <Divider>Chi tiết sản phẩm</Divider>

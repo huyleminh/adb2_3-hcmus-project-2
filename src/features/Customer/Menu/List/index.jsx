@@ -28,6 +28,7 @@ function ViewListFeature(props) {
     const basicSort = ["Mặc định", "Giá tăng dần", "Giá giảm dần", "A -> Z", "Z -> A"];
 
     useEffect(() => {
+        document.title = "Sản phẩm";
         //fetch initial data
 
         //Test data

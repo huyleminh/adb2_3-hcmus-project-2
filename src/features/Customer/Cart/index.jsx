@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { PageHeader, Divider, Affix } from "antd";
+import { PageHeader, Affix } from "antd";
 import NumberFormat from "react-number-format";
 import ProductTable from "../../../components/Table/index"
 import "./styles.css"
@@ -15,6 +15,7 @@ function CartFeature(props) {
     const [selectedItems, setSelectedItems] = useState([]);
 
     useEffect(() => {
+        document.title = "Giỏ hàng của tôi";
         let fakeData = [];
 
         for (let i = 0; i < 20; i++)
@@ -26,7 +27,8 @@ function CartFeature(props) {
                 quantity: 1
             })
 
-            setData(fakeData);
+        setData(fakeData);
+        localStorage.removeItem("cart");
     }, []);
 
     const selectItem = (selectedKeys, selectedRows) => {
@@ -51,13 +53,32 @@ function CartFeature(props) {
         //handle delete item here
     }
 
-    const sumPrice = () => {
+    const getCartDetail = () => {
         let sum = 0;
+        let productList = []
         for (let item of data) {
-            if (selectedItems.includes(item.key))
+            if (selectedItems.includes(item.key)) {
                 sum += item.price * item.quantity;
+                productList.push(item);
+            }
         }
-        return sum;
+        return {
+            total: sum,
+            list: productList
+        };
+    }
+
+    const toCheckout = () => {
+        let detail = getCartDetail();
+
+        if (detail.list.length === 0) {
+            alert("Please choose at least 1 product");
+            return
+        }
+
+        localStorage.setItem("cart", JSON.stringify(detail));
+
+        history.push("/checkout");
     }
 
     return (
@@ -71,7 +92,6 @@ function CartFeature(props) {
                     title="Về trang sản phẩm"
                 />
         </div>
-        <Divider>Giỏ hàng của tôi</Divider>
         <Affix offsetTop={0}>
             <div className="floating-ribbon">
                 <div className="checkout">
@@ -80,13 +100,13 @@ function CartFeature(props) {
                         <>
                             <NumberFormat
                             style={{ color:"red" }}
-                            value={sumPrice()}
+                            value={getCartDetail().total}
                             displayType="text"
                             thousandSeparator
                         />
                         <span style={{ fontSize: "0.75em", color: "red" }}> VNĐ</span>
                         </>}</p>
-                    <button className="checkout-btn">Thanh toán</button>
+                    <button className="checkout-btn" onClick={toCheckout}>Thanh toán</button>
                 </div>
             </div>
         </Affix>
