@@ -5,6 +5,7 @@
 .floating-ribbon {
     display: flex;
     justify-content: flex-end;
+    background-color: #f0f2f5;
 }
 
 .checkout {
@@ -12,8 +13,11 @@
     height: 70px;
     margin: 0px 50px;
     padding: 0px 5px 0px 15px;
-    background-color: #f0f2f5;
-    border-radius: 0px 0px 0px 10px;
+}
+
+.ant-affix {
+    box-shadow: 0px 2px 20px grey;
+    transition: box-shadow 0.3s;
 }
 
 .checkout > p {

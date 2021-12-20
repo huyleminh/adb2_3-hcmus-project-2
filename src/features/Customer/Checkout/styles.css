@@ -1,0 +1,60 @@
+.container {
+    margin: 0px 50px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.left-part {
+    width: 60%;
+}
+
+.right-part {
+    width: 38%;
+    margin-bottom: 10px;
+}
+
+.user-info {
+    background-color: white;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.btn-area {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.summary {
+    display: grid;
+    grid-template-columns: 70% 30%;
+    text-align: right;
+    line-height: 2em;
+    margin: 10px 0px;
+}
+
+.summary > span:nth-child(odd) {
+    font-size: 1.2em;
+    font-weight: bolder;
+}
+
+.summary > span:nth-child(6) {
+    color: red;
+}
+
+.checkout-btn {
+    margin: 10px 0px;
+}
+
+@media only screen and (max-width: 1350px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .left-part {
+        width: 100%;
+    }
+
+    .right-part {
+        width: 100%;
+    }
+}

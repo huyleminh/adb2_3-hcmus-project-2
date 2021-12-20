@@ -11,6 +11,14 @@
     color: red;
 }
 
+.delete-btn:disabled {
+    cursor: not-allowed;
+}
+
+.delete-btn:disabled:hover {
+    color: black;
+}
+
 .product-image {
     object-fit: contain;
 }

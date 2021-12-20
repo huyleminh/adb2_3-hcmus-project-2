@@ -11,7 +11,8 @@ function ProductTable(props) {
     const {
         data,
         pagination,
-        readOnly,
+        disabled,
+        infoOnly,
         selectRecord,
         deleteRecord,
         changeQuantity
@@ -68,7 +69,7 @@ function ProductTable(props) {
           key: 'quantity',
           dataIndex: 'quantity',
           render: (value, record) => (
-            <InputNumber min={1} value={value} disabled={readOnly} onChange={(value) => changeQuantity(value, record)} />
+            <InputNumber min={1} value={value} disabled={disabled || infoOnly} onChange={(value) => changeQuantity(value, record)} />
           ),
         },
         {
@@ -87,16 +88,21 @@ function ProductTable(props) {
                 )
             }
         },
-        {
-            title: 'Hành động',
-            key: 'action',
-            render: (action, record) => (
-                <button className='delete-btn' onClick={() => deleteRecord(record.key)} disabled={props.disabled}>
-                    <FontAwesomeIcon icon={faTrashAlt} />
-                </button>
-            ),
-        },
     ];
+
+    if (!infoOnly) {
+        columns.push(
+            {
+                title: 'Hành động',
+                key: 'action',
+                render: (action, record) => (
+                    <button className='delete-btn' onClick={() => deleteRecord(record.key)} disabled={disabled}>
+                        <FontAwesomeIcon icon={faTrashAlt} />
+                    </button>
+                ),
+            }
+        )
+    }
 
     const rowSelection = {
         onChange: (selectedRowKeys, selectedRows) => {
@@ -107,10 +113,10 @@ function ProductTable(props) {
 
     return (<div>
         <Table
-            rowSelection={{
-            type: "checkbox",
-            ...rowSelection,
-            }}
+            rowSelection={infoOnly ? (null) : ({
+                type: "checkbox",
+                ...rowSelection,
+                })}
             columns={columns}
             dataSource={data}
             pagination={{ position: ["bottomCenter"], pageSize: pagination }}
