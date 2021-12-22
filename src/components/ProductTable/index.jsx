@@ -30,8 +30,8 @@ function ProductTable(props) {
                             className='product-image'
                             src={image}
                             alt='Hình ảnh sản phẩm'
-                            width={200}
-                            height={200}
+                            width={infoOnly ? (150) : (200)}
+                            height={infoOnly ? (150) : (200)}
                             loading='lazy'
                         >
                         </img>

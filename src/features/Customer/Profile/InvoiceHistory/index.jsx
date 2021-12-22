@@ -34,7 +34,6 @@ const sortBy = [
 ];
 
 function InvoiceHistory() {
-    //1, 'hxiaob46', '697621414', '0706576651', N'Stuart Vi', '373-3720 Mi St.'
     moment.locale('vi');
 
     const [isLoading, setIsLoading] = useState(false);
