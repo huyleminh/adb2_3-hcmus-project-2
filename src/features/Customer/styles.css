@@ -1,0 +1,9 @@
+.app-main {
+    min-height: calc(100vh - 70px);
+    display: flex;
+    flex-direction: column;
+}
+
+.app-main > div {
+    flex-grow: 1;
+}

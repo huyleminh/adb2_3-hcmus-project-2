@@ -8,13 +8,14 @@ import CartFeature from "./Cart";
 import CheckoutFeature from "./Checkout";
 import MenuFeature from "./Menu";
 import ProfileFeature from "./Profile";
+import "./styles.css"
 
 CustomerFeature.propTypes = {};
 
 function CustomerFeature(props) {
     return (
         <Layout>
-            <AppHeader />
+            <AppHeader/>
 
             <Layout.Content className="app-main">
                 <Switch>
