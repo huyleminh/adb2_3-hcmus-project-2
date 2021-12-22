@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { PageHeader, Form, Input, Select } from "antd";
 import NumberFormat from "react-number-format";
-import ProductTable from "../../../components/Table/index"
+import ProductTable from "../../../components/ProductTable/index"
 import "./styles.css"
 
 CheckoutFeature.propTypes = {};

@@ -1,0 +1,25 @@
+.invoice-history-container {
+    background-color: white;
+    padding: 10px;
+}
+
+.invoice-history-filterbar {
+    display: flex;
+    justify-content: flex-end;
+    margin: 0px 0px 10px 0px;
+}
+
+.invoice-history-filterbar > * {
+    margin: 0px 0px 0px 15px;
+}
+
+.invoice-history-filterbar > span {
+    display: inline-flex;
+    align-items: center;
+}
+
+.invoice-history-loading {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2em;
+}
