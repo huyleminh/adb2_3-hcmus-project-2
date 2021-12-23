@@ -12,7 +12,7 @@ export default class AuthMiddlewares {
             !username.trim() ||
             !password.trim()
         ) {
-            return res.json({ status: 400, message: "Missing data" });
+            return res.json({ status: 400, message: "Thiếu thông tin đăng kí" });
         }
 
         res.locals.payload = {

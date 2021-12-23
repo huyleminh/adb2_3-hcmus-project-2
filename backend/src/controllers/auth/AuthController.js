@@ -38,7 +38,7 @@ export default class AuthController extends AppController {
                 return res.json({ status: 403, message: err });
             }
 
-            return res.json({ status: 200, message: "Verify Ok", data: data.role });
+            return res.json({ status: 200, message: "Verify Ok", data: { role: data.role } });
         });
     }
 
@@ -87,12 +87,12 @@ export default class AuthController extends AppController {
         try {
             const oldUser = await AccountModel.getAllByUsername(payload.username);
             if (oldUser.length !== 0) {
-                return res.json({ status: 400, message: "Existed user" });
+                return res.json({ status: 400, message: "Người dùng đã tồn tại" });
             }
 
             const isPhoneValid = await CustomerModel.verifyUniquePhoneNumber(payload.phoneNumber);
             if (!isPhoneValid) {
-                return res.json({ status: 400, message: "Existed phone number" });
+                return res.json({ status: 400, message: "Số điện thoại này đã tồn tại" });
             }
 
             // Username is valid
