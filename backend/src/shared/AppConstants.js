@@ -4,7 +4,7 @@ dotenv.config();
 
 class AppConstants {
     static get PORT() {
-        return process.env.PORT;
+        return Number.parseInt(process.env.PORT);
     }
 
     static get AUTH_CLIENT_URL() {
@@ -23,7 +23,7 @@ class AppConstants {
         return {
             HOST: process.env.DB_HOST,
             NAME: process.env.DB_NAME,
-            PORT: process.env.DB_PORT,
+            PORT: Number.parseInt(process.env.DB_PORT),
             USERNAME: process.env.DB_USERNAME,
             PASSWORD: process.env.DB_PASSWORD,
         };

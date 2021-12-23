@@ -1,5 +1,5 @@
 import knex from "knex";
-import AppConstants from "../shared/AppConstants";
+import AppConstants from "../shared/AppConstants.js";
 
 const KnexConnection = knex({
     client: "mssql",
