@@ -1,15 +1,42 @@
 import { faLock, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Divider, Form, Input, Typography } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
+import { useHistory } from "react-router-dom";
+import AuthService from "../../../service/AuthService";
+import ClientAPI from "../../../service/ClientAPI";
 import "./styles.css";
 
 LoginFeature.propTypes = {};
 
 function LoginFeature(props) {
-    const onSubmitLogin = (form) => {
-        console.log(form);
+    const history = useHistory();
+
+    const onSubmitLogin = async (form) => {
+        try {
+            const res = await ClientAPI.post("/auth/login", form);
+
+            if (res.status === 200) {
+                const data = res.data;
+                AuthService.setUser(data);
+                history.push("/");
+            } else if (res.status === 400) {
+                alert("Vui lòng nhập tài khoản và mật khẩu hợp lệ");
+            } else if (res.status === 401) {
+                alert("Tài khoản hoặc mật khẩu không đúng");
+            } else {
+                throw new Error("Lỗi hệ thống, vui lòng thử lại sau giây lát");
+            }
+        } catch (error) {
+            console.log(error);
+            alert("Đã có lỗi xảy ra");
+        }
     };
+
+    useEffect(() => {
+        AuthService.removeUser();
+        document.title = "Đăng nhập";
+    }, []);
 
     return (
         <div className="login-wrapper">
@@ -43,6 +70,10 @@ function LoginFeature(props) {
                             {
                                 required: true,
                                 message: "Mật khẩu không được bỏ trống!",
+                            },
+                            {
+                                min: 6,
+                                message: "Mật khẩu phải có tối thiểu 6 kí tự",
                             },
                         ]}
                     >

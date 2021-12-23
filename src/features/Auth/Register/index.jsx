@@ -1,15 +1,45 @@
 import { faAddressCard, faLock, faPhone, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Col, Divider, Form, Input, Row, Typography } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
+import { useHistory } from "react-router-dom";
+import AuthService from "../../../service/AuthService";
+import ClientAPI from "../../../service/ClientAPI";
 import "./styles.css";
 
 RegisterFeature.propTypes = {};
 
 function RegisterFeature(props) {
-    const onSubmitRegister = (form) => {
-        console.log(form);
+    const history = useHistory();
+
+    const onSubmitRegister = async (form) => {
+        const { password, confirmPassword } = form;
+        if (password !== confirmPassword) {
+            alert("Mật khẩu không trùng khớp");
+            return;
+        }
+
+        try {
+            const res = await ClientAPI.post("/auth/signup", form);
+
+            if (res.status === 201) {
+                alert("Đăng kí thành công, vui lòng đăng nhập để xác nhận");
+                history.push("/login");
+            } else if (res.status === 400) {
+                alert(res.message);
+            } else {
+                throw new Error("Lỗi hệ thống, vui lòng thử lại sau giây lát");
+            }
+        } catch (error) {
+            console.log(error);
+            alert("Đã có lỗi xảy ra");
+        }
     };
+
+    useEffect(() => {
+        document.title = "Đăng kí";
+        AuthService.removeUser();
+    }, []);
 
     return (
         <div className="register-wrapper">
@@ -32,7 +62,7 @@ function RegisterFeature(props) {
                                 rules={[
                                     {
                                         required: true,
-                                        message: "Họ và tên không được bỏ trống!",
+                                        message: "Họ và tên không được bỏ trống",
                                     },
                                 ]}
                             >
@@ -47,7 +77,11 @@ function RegisterFeature(props) {
                                 rules={[
                                     {
                                         required: true,
-                                        message: "Số điện thoại không được bỏ trống!",
+                                        message: "Số điện thoại không được bỏ trống",
+                                    },
+                                    {
+                                        len: 10,
+                                        message: "Số điện thoại phải đúng 10 chữ số",
                                     },
                                 ]}
                             >
@@ -66,7 +100,7 @@ function RegisterFeature(props) {
                         rules={[
                             {
                                 required: true,
-                                message: "Tên đăng nhập không được bỏ trống!",
+                                message: "Tên đăng nhập không được bỏ trống",
                             },
                         ]}
                     >
@@ -81,7 +115,11 @@ function RegisterFeature(props) {
                                 rules={[
                                     {
                                         required: true,
-                                        message: "Mật khẩu không được bỏ trống!",
+                                        message: "Mật khẩu không được bỏ trống",
+                                    },
+                                    {
+                                        min: 6,
+                                        message: "Mật khẩu phải có tối thiểu 6 kí tự",
                                     },
                                 ]}
                             >
