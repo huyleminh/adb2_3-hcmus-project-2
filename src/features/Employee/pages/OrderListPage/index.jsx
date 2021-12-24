@@ -1,5 +1,7 @@
-import { Button, Divider, Select, Space, Table, Tag, DatePicker } from "antd";
+import { CheckCircleOutlined, MinusCircleOutlined, SyncOutlined } from "@ant-design/icons";
+import { Button, DatePicker, Divider, Select, Space, Table, Tag } from "antd";
 import React, { useEffect, useState } from "react";
+import NumberFormat from "react-number-format";
 import { Link } from "react-router-dom";
 import EmployeeConst from "../../shared/EmployeeConst";
 
@@ -39,29 +41,61 @@ function OrderListPage(props) {
             key: "status",
             render: (status) => {
                 if (status === EmployeeConst.ORDER_STATUS.NEW) {
-                    return <Tag color="#2db7f5">Đơn mới</Tag>;
+                    return (
+                        <Tag icon={<SyncOutlined spin />} color="processing">
+                            Đơn mới
+                        </Tag>
+                    );
                 }
 
                 if (status === EmployeeConst.ORDER_STATUS.DELIVERING) {
-                    return <Tag color="#991dbe">Đang chờ giao</Tag>;
+                    return (
+                        <Tag icon={<SyncOutlined spin />} color="warning">
+                            Đang giao
+                        </Tag>
+                    );
                 }
 
                 if (status === EmployeeConst.ORDER_STATUS.SUCCESS) {
-                    return <Tag color="#87d068">Hoàn thành</Tag>;
+                    return (
+                        <Tag icon={<CheckCircleOutlined />} color="success">
+                            Hoàn tất
+                        </Tag>
+                    );
                 }
 
-                return <Tag color="#f50">Không xác định</Tag>;
+                return (
+                    <Tag icon={<MinusCircleOutlined />} color="error">
+                        Đã hủy
+                    </Tag>
+                );
             },
         },
         {
             title: "Giá giảm",
             dataIndex: "discount",
             key: "discount",
+            render: (discount) => {
+                return (
+                    <>
+                        <NumberFormat value={discount} displayType="text" thousandSeparator />
+                        <span style={{ fontSize: "0.75em" }}> VNĐ</span>
+                    </>
+                );
+            },
         },
         {
             title: "Tổng tiền",
             dataIndex: "totalMoney",
             key: "totalMoney",
+            render: (totalMoney) => {
+                return (
+                    <>
+                        <NumberFormat value={totalMoney} displayType="text" thousandSeparator />
+                        <span style={{ fontSize: "0.75em" }}> VNĐ</span>
+                    </>
+                );
+            },
         },
         {
             title: "Hành động",
@@ -87,7 +121,14 @@ function OrderListPage(props) {
             customerName: "test",
             createdDate: "date",
             paymentMethod: "COD",
-            status: i % 3 === 2 ? "new" : i % 3 === 1 ? "delivering" : "success",
+            status:
+                i % 4 === 3
+                    ? "processing"
+                    : i % 4 === 2
+                    ? "delivery"
+                    : i % 4 === 1
+                    ? "done"
+                    : "cancel",
             discount: 15000,
             totalMoney: 50000,
             action: `/employee/orders/${i + 1}`,
@@ -100,7 +141,7 @@ function OrderListPage(props) {
 
     const handleStatusChange = (value) => {
         console.log(value);
-    }
+    };
 
     useEffect(() => {
         const fetchOrder = async () => {
@@ -126,14 +167,15 @@ function OrderListPage(props) {
                     <Select.Option value={EmployeeConst.ORDER_STATUS.SUCCESS}>
                         Đơn đã giao
                     </Select.Option>
+                    <Select.Option value={EmployeeConst.ORDER_STATUS.CANCEL}>
+                        Đơn đã hủy
+                    </Select.Option>
                 </Select>
 
                 <DatePicker.RangePicker></DatePicker.RangePicker>
             </Space>
 
-            <Divider orientation="left">
-                Danh sách đơn hàng
-            </Divider>
+            <Divider orientation="left">Danh sách đơn hàng</Divider>
 
             <Table
                 bordered
