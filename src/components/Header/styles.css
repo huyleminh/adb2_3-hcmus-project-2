@@ -6,7 +6,7 @@
 
 .navigation-left {
     margin-left: 50px;
-    flex-grow: 1;
+    width: 50%;
     display: flex;
 }
 
@@ -22,6 +22,13 @@
     flex-grow: 1;
 }
 
+.navigation-right .ant-menu-overflow {
+    justify-content: flex-end;
+}
+
 .navigation-right {
+    display: flex;
     margin-right: 50px;
+    width: 50%;
+    justify-content: flex-end;
 }
