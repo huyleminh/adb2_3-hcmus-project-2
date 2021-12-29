@@ -1,13 +1,13 @@
 import { DownloadOutlined } from "@ant-design/icons";
-import { Button, Select, Space, Typography } from "antd";
+import { Button, message, Select, Skeleton, Space, Typography } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import { Bar } from "react-chartjs-2";
+import ClientAPI from "../../../../service/ClientAPI";
 
 function RevenuePage(props) {
     const [year, setYear] = useState(2021);
-    const [data, setData] = useState([
-        2478, 5267, 734, 784, 433, 2478, 5267, 734, 784, 433, 4689, 7513,
-    ]);
+    const [data, setData] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     const ref = useRef();
 
@@ -25,7 +25,31 @@ function RevenuePage(props) {
 
     useEffect(() => {
         document.title = "Thống kê doanh thu";
-    }, []);
+
+        const fetchStatisticPerYear = async () => {
+            setIsLoading(true);
+            try {
+                setTimeout(() => {
+                    setIsLoading(false);
+                    setData([2478, 5267, 734, 784, 433, 2478, 5267, 734, 784, 433, 4689, 7513]);
+                }, 1000);
+
+                // const response = await ClientAPI.get(`/orders/revenue?year=${year}`);
+                // setIsLoading(false);
+                // if (response.status === 200) {
+                //     setData(response.data);
+                //     message.success("Lấy dữ liệu thống kê thành công.", 1);
+                // } else {
+                //     message.error("Lấy dữ liệu thống kê thất bại.", 1);
+                // }
+            } catch (error) {
+                console.log(error);
+                message.error("Đã có lỗi xảy ra.", 1);
+            }
+        };
+
+        fetchStatisticPerYear();
+    }, [year]);
 
     const CHART_CONFIG = {
         data: {
@@ -85,15 +109,20 @@ function RevenuePage(props) {
                     Xuất hình ảnh
                 </Button>
             </Space>
-            <Bar
-                data={{
-                    ...CHART_CONFIG.data,
-                }}
-                options={{
-                    ...CHART_CONFIG.options,
-                }}
-                ref={ref}
-            />
+
+            {isLoading ? (
+                <Skeleton active loading={isLoading} />
+            ) : (
+                <Bar
+                    data={{
+                        ...CHART_CONFIG.data,
+                    }}
+                    options={{
+                        ...CHART_CONFIG.options,
+                    }}
+                    ref={ref}
+                />
+            )}
         </div>
     );
 }
