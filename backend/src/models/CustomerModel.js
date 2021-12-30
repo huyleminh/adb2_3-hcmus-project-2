@@ -28,4 +28,15 @@ export default class CustomerModel {
             }
         });
     }
+
+    static getByAccountId(accountId) {
+        return new Promise(async function (resolve, reject) {
+            try {
+                const resultSet = await KnexConnection("KhachHang").where("MaTK", accountId);
+                resolve(resultSet);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
 }

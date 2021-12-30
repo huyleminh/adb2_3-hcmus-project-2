@@ -1,3 +1,6 @@
+USE QUAN_LI_BAN_HANG_DO_AN_2
+GO
+
 INSERT INTO SanPhamNhap
   (MaPhieuNhap,MaSP,SoLuongNhap)
 VALUES
@@ -458,7 +461,6 @@ VALUES
   (315, 350, 57),
   (96, 94, 71),
   (422, 93, 10),
-  (462, 344, 76),
   (204, 32, 22),
   (207, 99, 21),
   (17, 244, 27),

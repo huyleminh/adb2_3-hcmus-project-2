@@ -88,7 +88,7 @@ CREATE TABLE SPGioHang
 CREATE TABLE PhieuNhapHang
 (
 	MaPhieuNhap INT IDENTITY(1,1),
-	NgayNhap TIMESTAMP,
+	NgayNhap DATETIME,
 	TenNhaCungUng NVARCHAR(50),
 	NVLapPNH INT,
 
@@ -109,7 +109,7 @@ CREATE TABLE HoaDon
 	MaHD INT IDENTITY(1,1),
 	MaKH INT,
 	NVLapHD INT,
-	ThoiGianLap TIMESTAMP,
+	ThoiGianLap DATETIME,
 	PTThanhToan TINYINT,
 	TongTien INT,
 	GiaGiam INT,

@@ -62,12 +62,12 @@ BEGIN
 	SELECT
 		MaHD,
 		MaSP,
-		(SoLuong * GiaBan) AS ThanhTien
+		(SoLuongMua * GiaBan) AS ThanhTien
 	INTO INSERTED_TinhThanhTien
 	FROM INSERTED
 
 	UPDATE SPHoaDon
-	SET ThanhTien = SPHoaDon.SoLuong * SPHoaDon.GiaBan
+	SET ThanhTien = SPHoaDon.SoLuongMua * SPHoaDon.GiaBan
 	FROM INSERTED_TinhThanhTien
 	WHERE SPHoaDon.MaHD = INSERTED_TinhThanhTien.MaHD AND SPHoaDon.MaSP = INSERTED_TinhThanhTien.MaSP
 

@@ -1,5 +1,8 @@
+USE QUAN_LI_BAN_HANG_DO_AN_2
+GO
+
 INSERT INTO [HoaDon]
-  (MaKH,NVLapHD,ThoiGianLap,PTTToan,GiaGiam,TrangThai)
+  (MaKH,NVLapHD,ThoiGianLap,PTThanhToan,GiaGiam,TrangThai)
 VALUES
   (456, 446, '2021-09-06 02:17:21', 2, 96252, 3),
   (322, 135, '2021-11-20 23:35:30', 2, 79123, 2),
