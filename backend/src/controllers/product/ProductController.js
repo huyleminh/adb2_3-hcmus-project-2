@@ -16,7 +16,7 @@ export default class ProductController extends AppController {
         this._router.post("/products/upload", ImageUpload.single("image"), this.upload);
 
         this._router.get("/products/:id", this.getProductById);
-        this._router.get("/products", this.getProductByPage);
+        this._router.get("/products", this.getProductsByPage);
     }
 
     upload(req, res) {
@@ -57,18 +57,34 @@ export default class ProductController extends AppController {
         }
     }
 
-    async getProductByPage(req, res) {
-        if (req.query.page === undefined)
+    async getProductsByPage(req, res) {
+        const params = req.query;
+        if (params.page === undefined)
             return res.json({ status: 500 });
         
         try {        
-            const limit = (req.query.limit !== undefined) ? parseInt(req.query.limit) : MAX_PRODUCTS_PER_PAGE;
-            const countProduct = await ProductModel.count();
-            const totalProducts = countProduct[0].count;
-
-            const page = parseInt(req.query.page);
+            const limit = (params.limit !== undefined) ? parseInt(params.limit) : MAX_PRODUCTS_PER_PAGE;
+            const page = parseInt(params.page);
             const offset = (page - 1) * limit;
-            const products = await ProductModel.getRangeProducts(offset, limit);
+
+            let products;
+            let countProduct;
+            if (params.search !== undefined) {  // search
+                const searchValue = params.search;
+                countProduct = await ProductModel.countByMatchingProductName(searchValue);
+                products = await ProductModel.getRangeProductsMatchingProductName(offset, limit, searchValue);
+                
+            } else if (params.catId !== undefined) {  // get by category id
+                const catId = parseInt(params.catId);
+                countProduct = await ProductModel.countByCatId(catId);
+                products = await ProductModel.getRangeProductsByCatId(offset, limit, catId);
+                
+            } else {  // get all
+                countProduct = await ProductModel.count();
+                products = await ProductModel.getRangeProducts(offset, limit);
+            }
+            
+            const totalProducts = countProduct[0].count;
             const productsMapped = products.map(product => {
                 return {
                     productId: product.MaSP,
