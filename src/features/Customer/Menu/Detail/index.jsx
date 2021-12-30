@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
-import { PageHeader, Divider, Descriptions, Skeleton, Spin } from "antd";
+import { PageHeader, Divider, Descriptions, Skeleton, Spin, message } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import NumberFormat from "react-number-format";
 import "./styles.css";
+import ClientAPI from "../../../../service/ClientAPI";
 
 ProductDetail.propTypes = {};
 
 function ProductDetail(props) {
-    const { id } = useParams(); //product ID
-
+    const { id } = useParams();
     const [data, setData] = useState({});
 
     const [isLoading, setIsLoading] = useState(false);
@@ -21,20 +21,36 @@ function ProductDetail(props) {
     const history = useHistory();
 
     useEffect(() => {
-        let testData = {
-            productId: id,
-            productName: `Sản phẩm ${id}`,
-            price: 10000000,
-            description:
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum a vestibulum ipsum. Ut eget pulvinar orci, at pretium ex. Donec volutpat ligula lacus, id tincidunt enim sagittis sed. Cras vestibulum efficitur lobortis. Integer justo felis, imperdiet vitae elit et, ultricies ornare nibh. Fusce euismod nunc eros, id blandit justo maximus eu. Vestibulum gravida vulputate turpis vehicula feugiat. Donec ullamcorper, eros in ornare convallis, lectus leo pharetra turpis, sit amet aliquam lectus neque sed ipsum.",
+        const fetchProductDetail = async () => {
+            setIsLoading(true);
+
+            try {
+                const res = await ClientAPI.get(`/products/${id}`);
+                setIsLoading(false);
+
+                if (res.status === 200) {
+                    const product = res.data;
+                    document.title = product.TenSP;
+
+                    setData({
+                        productId: product.MaSP,
+                        productName: product.TenSP,
+                        price: product.DonGia,
+                        description: product.MoTa,
+                        imageLink: product.HinhAnh,
+                        category: product.categoryName[0],
+                    });
+                } else {
+                    console.log(res);
+                    message.error("Đã có lỗi xảy ra", 1);
+                }
+            } catch (error) {
+                console.log(error);
+                message.error("Đã có lỗi xảy ra", 1);
+            }
         };
 
-        document.title = testData.productName;
-
-        setIsLoading(true);
-        //fetch data here
-        setData(testData);
-        setIsLoading(false);
+        fetchProductDetail();
     }, [id]);
 
     const addToCart = () => {
@@ -67,23 +83,16 @@ function ProductDetail(props) {
                             />
                         </div>
                     ) : (
-                        <img
-                            alt=""
-                            src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-                        />
+                        <img alt="" src={data.imageLink} />
                     )}
                 </div>
                 <div className="information">
-                    <Descriptions
-                        title="Thông tin"
-                        bordered
-                        column={{ xxl: 2, xl: 2, lg: 2, md: 2, sm: 2, xs: 2 }}
-                        layout="vertical"
-                    >
-                        <Descriptions.Item label="Tên" span={1}>
+                    <Descriptions title="Thông tin" layout="vertical" bordered>
+                        <Descriptions.Item label="Tên">
                             {isLoading ? <Skeleton active /> : data.productName}
                         </Descriptions.Item>
-                        <Descriptions.Item label="Giá sản phẩm" span={1}>
+
+                        <Descriptions.Item label="Giá sản phẩm">
                             {isLoading ? (
                                 <Skeleton active />
                             ) : (
@@ -97,10 +106,16 @@ function ProductDetail(props) {
                                 </>
                             )}
                         </Descriptions.Item>
-                        <Descriptions.Item label="Mô tả" span={2}>
+
+                        <Descriptions.Item label="Loại sản phẩm">
+                            {isLoading ? <Skeleton active /> : data.category?.TenLoai}
+                        </Descriptions.Item>
+
+                        <Descriptions.Item label="Mô tả" span={3}>
                             {isLoading ? <Skeleton active /> : data.description}
                         </Descriptions.Item>
                     </Descriptions>
+
                     <div className="button-area">
                         <button className="cart-btn" onClick={addToCart}>
                             {isProcessing ? (

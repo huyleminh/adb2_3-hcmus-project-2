@@ -14,7 +14,12 @@ export default class CategoryController extends AppController {
     async getAllCategories(req, res) {
         try {
             const categoryList = await CategoryModel.getAllCategories();
-            return res.json({ status: 200, data: categoryList });
+            return res.json({
+                status: 200,
+                data: categoryList.map((item) => {
+                    return { catId: item.MaLoai, catName: item.TenLoai };
+                }),
+            });
         } catch (error) {
             console.log(error);
             return res.json({ status: 500 });
