@@ -13,6 +13,7 @@ BEGIN
 
     RETURN @TongTien
 END
+GO
 
 --TRIGGER: TongTien(MaHD) = SUM(ThanhTien) SPHoaDon(MaHD) - GiaGiam
 CREATE TRIGGER tg_TongTienSPHD_D ON SPHoaDon
@@ -24,6 +25,7 @@ BEGIN
 	FROM DELETED
 	WHERE HoaDon.MaHD = deleted.MaHD
 END
+GO
 
 CREATE TRIGGER tg_TongTienMaHD_I ON HoaDon
 FOR INSERT
@@ -34,6 +36,7 @@ BEGIN
 	FROM INSERTED
 	WHERE HoaDon.MaHD = INSERTED.MaHD
 END
+GO
 
 CREATE TRIGGER tg_TongTienMaHD_U ON HoaDon
 FOR UPDATE
@@ -49,6 +52,7 @@ BEGIN
 	FROM DELETED
 	WHERE HoaDon.MaHD = DELETED.MaHD
 END
+GO
 
 --TRIGGER: ThanhTien SPHoaDon = (SoLuongMua * GiaBan)
 CREATE TRIGGER tg_ThanhTienSPHD ON SPHoaDon
