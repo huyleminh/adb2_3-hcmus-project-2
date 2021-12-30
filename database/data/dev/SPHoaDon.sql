@@ -1,3 +1,6 @@
+USE QUAN_LI_BAN_HANG_DO_AN_2
+GO
+
 INSERT INTO [SPHoaDon]
   (MaHD,MaSP,SoLuongMua,GiaBan)
 VALUES
@@ -420,7 +423,6 @@ VALUES
   (224, 239, 6, 384890),
   (90, 65, 9, 717785),
   (483, 2, 4, 168586),
-  (71, 189, 2, 707514),
   (144, 84, 3, 530045),
   (2, 178, 4, 520009),
   (357, 158, 2, 821304),

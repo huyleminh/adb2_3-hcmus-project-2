@@ -2,8 +2,11 @@ import jwt from "jsonwebtoken";
 import AuthMiddlewares from "../../middlewares/AuthMiddleware.js";
 import AccountModel from "../../models/AccountModel.js";
 import CustomerModel from "../../models/CustomerModel.js";
+import EmployeeModel from "../../models/EmployeeModel.js";
 import AppConstants from "../../shared/AppConstants.js";
 import AppController from "../AppController.js";
+
+const ROLE_VALUES = { ADMIN: 1, MANAGER: 2, EMPLOYEE: 3, USER: 4 };
 
 export default class AuthController extends AppController {
     constructor() {
@@ -55,10 +58,26 @@ export default class AuthController extends AppController {
                 return res.json({ status: 401 });
             }
 
+            let specifierRoleId;
+            if (users[0].VaiTro == ROLE_VALUES.EMPLOYEE) {
+                const [employee] = await EmployeeModel.getByAccountId(users[0].MaTK);
+                if (employee !== undefined)
+                    specifierRoleId = employee.MaNV;
+            } else {
+                const [customer] = await CustomerModel.getByAccountId(users[0].MaTK);
+                if (customer !== undefined)
+                    specifierRoleId = customer.MaKH;
+            }
+
             // Login ok
             // Generate access_token
             const token = jwt.sign(
-                { username: users[0].TenNguoiDung, role: users[0].VaiTro, id: users[0].MaTK },
+                {
+                    username: users[0].TenNguoiDung,
+                    role: users[0].VaiTro,
+                    id: users[0].MaTK,
+                    specifierRoleId
+                },
                 AppConstants.SECRET_KEY,
                 { expiresIn: "1h" }
             );

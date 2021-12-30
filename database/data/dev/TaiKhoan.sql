@@ -1,3 +1,6 @@
+USE QUAN_LI_BAN_HANG_DO_AN_2
+GO
+
 INSERT INTO TaiKhoan
   (TenNguoiDung,MatKhau,VaiTro)
 VALUES
