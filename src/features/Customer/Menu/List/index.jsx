@@ -1,6 +1,7 @@
-import { LoadingOutlined } from "@ant-design/icons";
-import { Divider, Input, Pagination, Row, Select, Spin } from "antd";
-import React, { useEffect, useState } from "react";
+import { Divider, Input, message, Pagination, Row, Select } from "antd";
+import React, { useEffect, useRef, useState } from "react";
+import Loading from "../../../../components/Loading";
+import ClientAPI from "../../../../service/ClientAPI";
 import ProductCard from "./Item/index";
 import "./styles.css";
 
@@ -17,59 +18,126 @@ function ViewListFeature(props) {
 
     const [basicSortBy, setBasicSortBy] = useState(0);
 
-    const [catList, setCatList] = useState([]);
+    const [catList, setCatList] = useState([{ catId: 0, catName: "Toàn bộ danh mục" }]);
 
-    const [sortByCat, setSortByCat] = useState(0);
-
-    const [pagination, setPagination] = useState({ page: 1, total: 40 });
+    const [pagination, setPagination] = useState({ page: 1, total: 0, limit: MAX_PER_PAGE });
 
     const [data, setData] = useState([]);
 
     const basicSort = ["Mặc định", "Giá tăng dần", "Giá giảm dần", "A -> Z", "Z -> A"];
 
+    const [filters, setFilters] = useState({
+        page: 1,
+        limit: MAX_PER_PAGE,
+        catId: 0,
+        search: "",
+    });
+
+    const searchref = useRef("");
+
     useEffect(() => {
         document.title = "Sản phẩm";
-        //fetch initial data
 
-        //Test data
-        let tempList = [];
+        const fetchCategories = async () => {
+            try {
+                const res = await ClientAPI.get(`/categories`);
 
-        for (let i = 0; i < 12; i++) {
-            tempList.push({
-                productId: `${i}`,
-                productName: `Sản phẩm ${i + 1}`,
-                srcImage: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png",
-                price: 10000000,
-            });
-        }
+                if (res.status === 200) {
+                    setCatList([{ catId: 0, catName: "Toàn bộ danh mục" }, ...res.data]);
+                } else {
+                    message.error("Đã có lỗi xảy ra", 1);
+                }
+            } catch (error) {
+                console.log(error);
+                message.error("Đã có lỗi xảy ra", 1);
+            }
+        };
 
-        setData(tempList);
+        fetchCategories();
     }, []);
 
     useEffect(() => {
-        //call API when change page
-    }, [pagination]);
+        const fetchProducts = async () => {
+            setIsLoading(true);
+            try {
+                const newFilter = { ...filters };
+                if (!newFilter.search.trim()) {
+                    delete newFilter.search;
+                }
+
+                if (newFilter.catId === 0) {
+                    delete newFilter.catId;
+                }
+
+                const query = Object.keys(newFilter)
+                    .map((key) => `${key}=${newFilter[key]}`)
+                    .join("&");
+
+                const res = await ClientAPI.get(`/products?${query}`);
+
+                setIsLoading(false);
+
+                if (res.status === 200) {
+                    const produtList = res.data.products;
+                    const paginationRes = res.data.pagination;
+
+                    setData(produtList);
+                    setPagination({
+                        page: paginationRes.page,
+                        total: paginationRes.totalProducts,
+                        limit: paginationRes.limit,
+                    });
+                } else {
+                    message.error("Đã có lỗi xảy ra", 1);
+                }
+            } catch (error) {
+                console.log(error);
+                message.error("Đã có lỗi xảy ra", 1);
+            }
+        };
+
+        fetchProducts();
+    }, [filters]);
 
     const handleChangeBasicSort = (value) => {
         setBasicSortBy(value);
-        setIsLoading(true);
-
-        //handle sort here
-
-        setIsLoading(false);
     };
 
     const handleChangeSortByCat = (value) => {
-        setSortByCat(value);
+        searchref.current.state.value = "";
+        setFilters({ ...filters, catId: value, search: "" });
     };
 
     const changePagination = (page) => {
-        setPagination({ page: page, total: pagination.total });
+        setFilters({ ...filters, page: page });
     };
 
     const searchItem = (value) => {
-        console.log(value);
+        if (!value.trim()) {
+            return;
+        }
+
+        setFilters({ ...filters, search: value, catId: 0 });
     };
+
+    const sortedProducts =
+        basicSortBy === 0
+            ? data
+            : data.sort((left, right) => {
+                  if (basicSortBy === 1) return left.price - right.price;
+
+                  if (basicSortBy === 2) return right.price - left.price;
+
+                  if (left.productName < right.productName) {
+                      return basicSortBy === 3 ? -1 : 1;
+                  }
+
+                  if (left.productName > right.productName) {
+                      return basicSortBy === 3 ? 1 : -1;
+                  }
+
+                  return 0;
+              });
 
     return (
         <div className="page_wrapper">
@@ -80,6 +148,7 @@ function ViewListFeature(props) {
                         loading={isLoading}
                         enterButton
                         onSearch={searchItem}
+                        ref={searchref}
                     />
                 </div>
                 <div className="filter-area">
@@ -98,49 +167,59 @@ function ViewListFeature(props) {
                             );
                         })}
                     </Select>
+
                     <Select
                         disabled={isLoading}
-                        value={catList}
+                        value={filters.catId}
                         style={{ width: 150 }}
                         onChange={handleChangeSortByCat}
                         placeholder="Danh mục"
                     >
-                        {catList.map((record, index) => {
+                        {catList.map((cat) => {
                             return (
-                                <Option key={index} value={index}>
-                                    {record}
+                                <Option key={cat.catId} value={cat.catId}>
+                                    {cat.catName}
                                 </Option>
                             );
                         })}
                     </Select>
                 </div>
             </div>
+
             <Divider>Sản phẩm</Divider>
+
             <div className="menu_wrapper">
                 {isLoading ? (
-                    <div className="loading">
-                        <Spin
-                            tip="Đang tải dữ liệu"
-                            indicator={
-                                <LoadingOutlined style={{ fontSize: 100, margin: 50 }} spin />
-                            }
-                        />
-                    </div>
+                    <Loading
+                        style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                        }}
+                    />
                 ) : (
-                    <Row gutter={[48, 48]} justify="center">
+                    <Row gutter={[24, 24]} justify="center">
                         {data.map((record) => {
-                            return <ProductCard detail={record} key={record.productId} span={4} />;
+                            return (
+                                <ProductCard
+                                    detail={record}
+                                    key={record.productId}
+                                    span={{ xs: 24, sm: 12, md: 8, lg: 8, xl: 6, xxl: 4 }}
+                                />
+                            );
                         })}
                     </Row>
                 )}
             </div>
+
             <Divider>Trang</Divider>
+
             <div className="pagination">
                 <Pagination
                     disabled={isLoading}
                     current={pagination.page}
                     onChange={changePagination}
-                    pageSize={MAX_PER_PAGE}
+                    pageSize={pagination.limit}
                     total={pagination.total}
                 />
             </div>

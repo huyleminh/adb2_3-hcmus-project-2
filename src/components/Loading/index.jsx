@@ -10,7 +10,7 @@ Loading.propTypes = {
 
 Loading.defaultProps = {
     size: "large",
-    tip: "Loading, please wait for a moment...",
+    tip: "Đang tải dữ liệu, vui lòng chờ trong giây lát",
 };
 
 function Loading(props) {

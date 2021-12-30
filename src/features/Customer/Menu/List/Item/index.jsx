@@ -10,12 +10,12 @@ import "./styles.css";
 
 ProductCard.propTypes = {
     detail: PropTypes.shape({
-        productId: PropTypes.string,
+        productId: PropTypes.number,
         productName: PropTypes.string,
-        srcImage: PropTypes.string,
+        imageLink: PropTypes.string,
         price: PropTypes.number,
     }),
-    span: PropTypes.number,
+    span: PropTypes.shape({}),
 };
 
 const { Meta } = Card;
@@ -47,7 +47,7 @@ function ProductCard(props) {
     };
 
     return (
-        <Col span={span}>
+        <Col {...span}>
             <Card
                 className="card"
                 key={detail.productId}
@@ -63,7 +63,7 @@ function ProductCard(props) {
                         </>
                     ) : (
                         <>
-                            <img alt="" src={detail.srcImage} />
+                            <img alt="" src={detail.imageLink} />
                             <div
                                 className="mask"
                                 onClick={() => {
