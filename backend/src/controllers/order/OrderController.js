@@ -12,6 +12,7 @@ export default class OrderController extends AppController {
     init() {
         this._router.get("/customer/shipping-info/:orderId", AuthMiddlewares.verifyToken, this.getShippingInfo);
         this._router.get("/employee/order-detail/:orderId", AuthMiddlewares.verifyToken, this.getByOrderId);
+        this._router.post("/employee/order/confirm", AuthMiddlewares.verifyToken, this.postConfirmOrder);
 
         this._router.get("/statistic/revenue/:year", AuthMiddlewares.verifyToken, this.getRevenueDataByYear);
     }
@@ -49,6 +50,17 @@ export default class OrderController extends AppController {
                 else
                     res.json({ status: 200, data: { orderInfo, orderDetail } })
             }
+        } catch {
+            res.json({ status: 500 })
+        }
+    }
+
+    async postConfirmOrder(req, res) {
+        const { orderId, status } = res.locals.payload
+
+        try {
+            await OrderModel.updateStatus(orderId, status)
+            res.json({ status: 201 })
         } catch {
             res.json({ status: 500 })
         }
