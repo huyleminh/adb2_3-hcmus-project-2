@@ -20,6 +20,8 @@ export default class AuthController extends AppController {
         this._router.post("/auth/login", this.postLogin);
 
         this._router.post("/auth/signup", AuthMiddlewares.verifySignupData, this.postSignup);
+
+        this._router.post("/admin/create-account", AuthMiddlewares.verifyToken, this.postCreateEmployeeAccount);
     }
 
     // Every time user access to private page, this handler will be called
@@ -138,6 +140,43 @@ export default class AuthController extends AppController {
         } catch (error) {
             console.log(error);
             return res.json({ status: 500 });
+        }
+    }
+
+    async postCreateEmployeeAccount(req, res) {
+        const payload = res.locals.payload
+        if (res.locals.token.role !== 1) {
+            return res.json({ status: 403, meesage: "Bạn không được phép truy cập chức năng này" })
+        }
+
+        try {
+            const [existingAccount] = await AccountModel.getAllByUsername(payload.username);
+            if (existingAccount !== undefined) {
+                return res.json({ status: 400, message: "Người dùng này đã tồn tại " })
+            }
+
+            const isExistingPhoneNumber = await EmployeeModel.checkExistingPhoneNumber(payload.phoneNumber);
+            if (isExistingPhoneNumber) {
+                return res.json({ status: 400, message: "Số điện thoại này đã tồn tại" })
+            }
+
+            const [accountId] = await AccountModel.insert({
+                TenNguoiDung: payload.username,
+                MatKhau: payload.password,
+                VaiTro: parseInt(payload.role)
+            })
+
+            await EmployeeModel.insert({
+                TenNV: payload.name,
+                DiaChiNV: payload.address,
+                SDTNhanVien: payload.phoneNumber,
+                MaTK: accountId
+            })
+
+            res.json({ status: 201 })
+        } catch (error) {
+            console.log(error)
+            res.json({ status: 500 })
         }
     }
 }
