@@ -15,7 +15,7 @@ export default class OrderModel {
                         { phoneNumber: "KhachHang.SoDienThoai"},
                         { shippingAddress: "KhachHang.DiaChi" },
                     );
-                
+
                 resolve(resultSet);
             } catch (error) {
                 reject(error);
@@ -41,7 +41,26 @@ export default class OrderModel {
                         { discount: "HoaDon.GiaGiam" },
                         { status: "HoaDon.TrangThai" },
                     );
-            
+
+                resolve(resultSet)
+            } catch (error) {
+                reject(error)
+            }
+        })
+    }
+
+    static getRevenueByYear(year) {
+        return new Promise(async function (resolve, reject) {
+            try {
+                const resultSet = await KnexConnection.raw(
+                    `
+                        select TongTienThang.Thang as Thang, SUM(TongTienThang.TongTien) as TongTien
+                        from (
+                            select TongTien, MONTH(ThoiGianLap) as Thang from HoaDon
+                            where YEAR(ThoiGianLap) = ${year}) as TongTienThang
+                        group by TongTienThang.Thang;
+                    `
+                )
                 resolve(resultSet)
             } catch (error) {
                 reject(error)

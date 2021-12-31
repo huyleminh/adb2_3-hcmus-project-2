@@ -29,19 +29,13 @@ function RevenuePage(props) {
         const fetchStatisticPerYear = async () => {
             setIsLoading(true);
             try {
-                setTimeout(() => {
-                    setIsLoading(false);
-                    setData([2478, 5267, 734, 784, 433, 2478, 5267, 734, 784, 433, 4689, 7513]);
-                }, 1000);
-
-                // const response = await ClientAPI.get(`/orders/revenue?year=${year}`);
-                // setIsLoading(false);
-                // if (response.status === 200) {
-                //     setData(response.data);
-                //     message.success("Lấy dữ liệu thống kê thành công.", 1);
-                // } else {
-                //     message.error("Lấy dữ liệu thống kê thất bại.", 1);
-                // }
+                const response = await ClientAPI.get(`/statistic/revenue/${year}`);
+                setIsLoading(false);
+                if (response.status === 200) {
+                    setData(response.data);
+                } else {
+                    message.error("Lấy dữ liệu thống kê thất bại.", 1);
+                }
             } catch (error) {
                 console.log(error);
                 message.error("Đã có lỗi xảy ra.", 1);
