@@ -19,7 +19,10 @@ export default class OrderController extends AppController {
 
     async getShippingInfo(req, res) {
         const { orderId } = res.locals.params;
-
+        if (res.locals.token.role !== 4) {
+            return res.json({ status: 403, meesage: "Bạn không được phép truy cập chức năng này" })
+        }
+        
         try {
             const customerId = res.locals.token.specifierRoleId
             const [shippingInfo] = await OrderModel.getShippingInfoByOrderIdAndCustomerId(orderId, customerId);
@@ -35,6 +38,9 @@ export default class OrderController extends AppController {
 
     async getByOrderId(req, res) {
         const { orderId } = res.locals.params
+        if (res.locals.token.role !== 3) {
+            return res.json({ status: 403, meesage: "Bạn không được phép truy cập chức năng này" })
+        }
 
         try {
             const customerId = res.locals.token.specifierRoleId
@@ -57,6 +63,9 @@ export default class OrderController extends AppController {
 
     async postConfirmOrder(req, res) {
         const { orderId, status } = res.locals.payload
+        if (res.locals.token.role !== 3) {
+            return res.json({ status: 403, meesage: "Bạn không được phép truy cập chức năng này" })
+        }
 
         try {
             await OrderModel.updateStatus(orderId, status)
