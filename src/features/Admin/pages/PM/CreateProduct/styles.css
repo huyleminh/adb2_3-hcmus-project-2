@@ -1,0 +1,93 @@
+
+.cp-container {
+    padding: 10px;
+}
+
+.cp-info-form {
+    margin-bottom: 10px;
+}
+
+.cp-btn-area {
+    display: flex;
+}
+
+.cp-header {
+    display: flex;
+    margin-bottom: 10px;
+    justify-content: space-between;
+}
+
+.cp-header > h3 {
+    color: #1890ff;
+    border-left: 2px solid #1890ff;
+    padding: 0px 10px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.cp-image-cell {
+    display: flex;
+    height: 200px;
+}
+
+.cp-hover-effect {
+    position: relative;
+}
+
+.cp-upload {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    opacity: 0;
+}
+
+.cp-uploaded-image {
+    max-height: 200px;
+    object-fit: contain;
+}
+
+.cp-preview-skeleton {
+    display: flex;
+    width: 200px;
+    height: 200px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    row-gap: 10px;
+
+    background-color: #c9c9c9;
+    color: white;
+    font-weight: 600;
+    font-size: 1.1em;
+    border-radius: 5px;
+}
+
+.cp-cancel-btn, .cp-done-btn {
+    margin-right: 10px;
+    border-radius: 5px;
+    padding: 10px;
+    color: white;
+}
+
+.cp-cancel-btn {
+    background-color: red;
+    transition: all 0.2s linear;
+}
+
+.cp-done-btn {
+    background-color: #1890ff;
+    transition: all 0.2s linear;
+}
+
+.cp-cancel-btn:hover {
+    cursor: pointer;
+    color: white;
+    background-color: rgb(160, 1, 1);
+}
+
+.cp-done-btn:hover {
+    cursor: pointer;
+    background-color: #003bfd;
+}

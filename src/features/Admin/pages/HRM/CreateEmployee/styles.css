@@ -1,0 +1,92 @@
+.ce-container {
+    padding: 10px;
+}
+
+.ce-info-form {
+    margin-bottom: 10px;
+}
+
+.ce-btn-area {
+    display: flex;
+}
+
+.ce-header {
+    display: flex;
+    margin-bottom: 10px;
+    justify-content: space-between;
+}
+
+.ce-header > h3 {
+    color: #1890ff;
+    border-left: 2px solid #1890ff;
+    padding: 0px 10px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.ce-image-cell {
+    display: flex;
+    height: 200px;
+}
+
+.ce-hover-effect {
+    position: relative;
+}
+
+.ce-upload {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    opacity: 0;
+}
+
+.ce-uploaded-image {
+    max-height: 200px;
+    object-fit: contain;
+}
+
+.ce-preview-skeleton {
+    display: flex;
+    width: 200px;
+    height: 200px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    row-gap: 10px;
+
+    background-color: #c9c9c9;
+    color: white;
+    font-weight: 600;
+    font-size: 1.1em;
+    border-radius: 5px;
+}
+
+.ce-cancel-btn, .ce-done-btn {
+    margin-right: 10px;
+    border-radius: 5px;
+    padding: 10px;
+    color: white;
+}
+
+.ce-cancel-btn {
+    background-color: red;
+    transition: all 0.2s linear;
+}
+
+.ce-done-btn {
+    background-color: #1890ff;
+    transition: all 0.2s linear;
+}
+
+.ce-cancel-btn:hover {
+    cursor: pointer;
+    color: white;
+    background-color: rgb(160, 1, 1);
+}
+
+.ce-done-btn:hover {
+    cursor: pointer;
+    background-color: #003bfd;
+}

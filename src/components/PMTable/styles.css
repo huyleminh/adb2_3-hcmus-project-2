@@ -1,0 +1,49 @@
+.delete-btn, .edit-btn {
+    margin-right: 10px;
+}
+
+.delete-btn {
+    font-size: 1.45em;
+    padding: 0px;
+    background-color: rgba(255, 255, 255, 0);
+    color: black;
+    transition: color 0.2s;
+}
+
+.delete-btn:hover {
+    cursor: pointer;
+    color: red;
+}
+
+.delete-btn:disabled {
+    cursor: not-allowed;
+}
+
+.delete-btn:disabled:hover {
+    color: black;
+}
+
+.edit-btn {
+    font-size: 1.45em;
+    padding: 0px;
+    background-color: rgba(255, 255, 255, 0);
+    color: black;
+    transition: color 0.2s;
+}
+
+.edit-btn:hover {
+    cursor: pointer;
+    color: #1890ff;
+}
+
+.edit-btn:disabled {
+    cursor: not-allowed;
+}
+
+.edit-btn:disabled:hover {
+    color: black;
+}
+
+.product-image {
+    object-fit: contain;
+}

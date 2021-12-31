@@ -1,30 +1,31 @@
-import { LoadingOutlined, UserAddOutlined } from "@ant-design/icons";
+import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Spin, Input, Tooltip } from "antd";
-import EmployeeTable from "../../../../components/EmployeeTable"
+import PMTable from "../../../../components/PMTable"
 import "./styles.css";
 
-HRM.propTypes = {};
+PM.propTypes = {};
 
 const { Search } = Input;
 
-function HRM() {
+function PM() {
     const [data, setData] = useState({});
 
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        document.title = "Quản lý nhân sự";
+        document.title = "Quản lý sản phẩm";
         setIsLoading(true);
         let fakeData = [];
 
         for (let i = 0; i < 20; i++)
             fakeData.push({
                 key: i,
-                employeeName: `Nhân viên ${i}`,
-                address: '1234 test address, q5, tphcm',
-                phoneNumber: '0123456789',
+                srcImage: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png",
+                productName: `Sản phẩm ${i}`,
+                price: 10000000,
+                remainingAmount: 50
             });
 
         setData(fakeData);
@@ -36,21 +37,21 @@ function HRM() {
     }
 
     return (
-    <div className="hrm-container">
-        <div className="hrm-command-bar">
-            <div className="hrm-search">
+    <div className="pm-container">
+        <div className="pm-command-bar">
+            <div className="pm-search">
                 <Search
-                    placeholder="Nhập tên nhân viên để tìm kiếm"
+                    placeholder="Nhập tên sản phẩm để tìm kiếm"
                     loading={isLoading}
                     enterButton
                     onSearch={searchItem}
                 />
             </div>
-            <Tooltip title="Thêm nhân viên mới" placement="left" arrowPointAtCenter>
-                <Link className="hrm-add-employee-btn" to="/admin/human-resource-management/create">{<UserAddOutlined style={{ fontSize: 15}} />}</Link>
+            <Tooltip title="Thêm sản phẩm mới" placement="left" arrowPointAtCenter>
+                <Link className="pm-add-employee-btn" to="/admin/product-management/create">{<PlusOutlined style={{ fontSize: 15}} />}</Link>
             </Tooltip>
         </div>
-        <div className="hrm-content">
+        <div className="pm-content">
             {isLoading ? (
                     <div className="loading">
                         <Spin
@@ -60,9 +61,9 @@ function HRM() {
                             }
                         />
                     </div>
-                ) : (<EmployeeTable data={data} noSelect pagination={10} />)}
+                ) : (<PMTable data={data} noSelect pagination={5} />)}
         </div>
     </div>);
 }
 
-export default HRM;
+export default PM;
