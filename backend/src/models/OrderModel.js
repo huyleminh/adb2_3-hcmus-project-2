@@ -67,4 +67,18 @@ export default class OrderModel {
             }
         })
     }
+
+    static updateStatus(orderId, status) {
+        return new Promise(async function (resolve, reject) {
+            try {
+                const resultSet = await KnexConnection("HoaDon")
+                    .where("MaHD", orderId)
+                    .update("TrangThai", status)
+                
+                resolve(resultSet)
+            } catch (error) {
+                reject(error)
+            }
+        })
+    }
 }
