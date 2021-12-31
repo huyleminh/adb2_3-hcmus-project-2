@@ -199,7 +199,7 @@ function ViewListFeature(props) {
                     />
                 ) : (
                     <Row gutter={[24, 24]} justify="center">
-                        {data.map((record) => {
+                        {sortedProducts.map((record) => {
                             return (
                                 <ProductCard
                                     detail={record}

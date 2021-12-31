@@ -16,4 +16,13 @@ export default class AuthService {
     static removeUser(user) {
         localStorage.removeItem("user");
     }
+
+    static isLogin() {
+        const token = AuthService.getUserToken();
+        if (!token) {
+            return false;
+        }
+
+        return true;
+    }
 }
