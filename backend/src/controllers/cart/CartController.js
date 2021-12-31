@@ -15,7 +15,7 @@ export default class CartController extends AppController {
 
         this._router.put("/cart/:id", AuthMiddleware.verifyToken, this.editCustomerCart);
 
-        this._router.delete("/cart/:id", AuthMiddleware.verifyToken, this.deleteCustomerCartItem);
+        this._router.delete("/cart/:cartId/:productId", AuthMiddleware.verifyToken, this.deleteCustomerCartItem);
     }
 
     async getCustomerCart(req, res) {
@@ -100,11 +100,10 @@ export default class CartController extends AppController {
     }
 
     async deleteCustomerCartItem(req, res) {
-        const { payload } = res.locals;
-        const { id } = req.params;
+        const { cartId, productId } = req.params;
 
         try {
-            await CartModel.deleteCartItem(id, payload.productId);
+            await CartModel.deleteCartItem(cartId, productId);
 
             return res.json({ status: 200 });
         } catch (error) {

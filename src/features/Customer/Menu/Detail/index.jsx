@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useHistory } from "react-router-dom";
-import { PageHeader, Divider, Descriptions, Skeleton, Spin, message } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Descriptions, Divider, message, PageHeader, Skeleton, Spin } from "antd";
+import React, { useEffect, useState } from "react";
 import NumberFormat from "react-number-format";
-import "./styles.css";
+import { useHistory, useParams } from "react-router-dom";
+import AuthService from "../../../../service/AuthService";
 import ClientAPI from "../../../../service/ClientAPI";
+import "./styles.css";
 
 ProductDetail.propTypes = {};
 
@@ -53,10 +54,53 @@ function ProductDetail(props) {
         fetchProductDetail();
     }, [id]);
 
-    const addToCart = () => {
+    const addToCart = async () => {
         setIsProcessing(true);
-        //handle add to cart
-        setIsProcessing(false);
+
+        if (!AuthService.isLogin()) {
+            addToCartLocal();
+            message.success("Thêm vào giỏ hàng thành công", 1);
+            setIsProcessing(false);
+            return;
+        }
+
+        try {
+            const res = await ClientAPI.post("/cart", {
+                productId: data.productId,
+                quantity: 1,
+            });
+
+            setIsProcessing(false);
+
+            if (res.status === 201) {
+                message.success("Thêm vào giỏ hàng thành công", 1);
+            } else {
+                addToCartLocal();
+                message.success("Thêm vào giỏ hàng thành công", 1);
+            }
+        } catch (error) {
+            console.log(error);
+            message.error("Không thể thêm vào giỏ hàng", 1);
+        }
+    };
+
+    const addToCartLocal = () => {
+        const cartItems = JSON.parse(localStorage.getItem("cartItems"))
+            ? JSON.parse(localStorage.getItem("cartItems"))
+            : [];
+        const index = cartItems.findIndex((item) => item.productId === data.productId);
+        if (index === -1) {
+            const cart = { ...data, quantity: 1 };
+
+            delete cart.description;
+            delete cart.category;
+
+            cartItems.push(cart);
+        } else {
+            cartItems[index].quantity++;
+        }
+
+        localStorage.setItem("cartItems", JSON.stringify(cartItems));
     };
 
     return (

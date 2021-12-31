@@ -1,11 +1,13 @@
 import { LoadingOutlined } from "@ant-design/icons";
 import { faEye, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Card, Col, Spin } from "antd";
+import { Card, Col, message, Spin } from "antd";
 import PropTypes from "prop-types";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import NumberFormat from "react-number-format";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { useHistory } from "react-router-dom";
+import AuthService from "../../../../../service/AuthService";
+import ClientAPI from "../../../../../service/ClientAPI";
 import "./styles.css";
 
 ProductCard.propTypes = {
@@ -23,27 +25,52 @@ const { Meta } = Card;
 function ProductCard(props) {
     const { detail, span } = props;
 
-    const [isLoading, setIsLoading] = useState(false);
-
     const [isProcessing, setIsProcessing] = useState(false);
 
     const history = useHistory();
 
-    useEffect(() => {
-        setIsLoading(true);
-
-        //fetch image
-
-        setIsLoading(false);
-    }, []);
-
-    const addToCart = () => {
+    const addToCart = async () => {
         setIsProcessing(true);
 
-        console.log(detail.productId);
-        //handle add to cart
+        if (!AuthService.isLogin()) {
+            addToCartLocal();
+            message.success("Thêm vào giỏ hàng thành công", 1);
+            setIsProcessing(false);
+            return;
+        }
 
-        setIsProcessing(false);
+        try {
+            const res = await ClientAPI.post("/cart", {
+                productId: detail.productId,
+                quantity: 1,
+            });
+
+            setIsProcessing(false);
+
+            if (res.status === 201) {
+                message.success("Thêm vào giỏ hàng thành công", 1);
+            } else {
+                addToCartLocal();
+                message.success("Thêm vào giỏ hàng thành công", 1);
+            }
+        } catch (error) {
+            console.log(error);
+            message.error("Không thể thêm vào giỏ hàng", 1);
+        }
+    };
+
+    const addToCartLocal = () => {
+        const cartItems = JSON.parse(localStorage.getItem("cartItems"))
+            ? JSON.parse(localStorage.getItem("cartItems"))
+            : [];
+        const index = cartItems.findIndex((item) => item.productId === detail.productId);
+        if (index === -1) {
+            cartItems.push({ ...detail, quantity: 1 });
+        } else {
+            cartItems[index].quantity++;
+        }
+
+        localStorage.setItem("cartItems", JSON.stringify(cartItems));
     };
 
     return (
@@ -53,33 +80,23 @@ function ProductCard(props) {
                 key={detail.productId}
                 hoverable
                 cover={
-                    isLoading ? (
-                        <>
-                            <div className="loading">
-                                <Spin
-                                    indicator={<LoadingOutlined style={{ fontSize: 50 }} spin />}
+                    <>
+                        <img alt="productImage" src={detail.imageLink} />
+                        <div
+                            className="mask"
+                            onClick={() => {
+                                history.push(`/menu/products/${detail.productId}`);
+                            }}
+                        >
+                            <span className="mask-text">
+                                <FontAwesomeIcon
+                                    style={{ margin: "0px 5px 0px 0px" }}
+                                    icon={faEye}
                                 />
-                            </div>
-                        </>
-                    ) : (
-                        <>
-                            <img alt="" src={detail.imageLink} />
-                            <div
-                                className="mask"
-                                onClick={() => {
-                                    history.push(`/menu/products/${detail.productId}`);
-                                }}
-                            >
-                                <span className="mask-text">
-                                    <FontAwesomeIcon
-                                        style={{ margin: "0px 5px 0px 0px" }}
-                                        icon={faEye}
-                                    />
-                                    Xem chi tiết
-                                </span>
-                            </div>
-                        </>
-                    )
+                                Xem chi tiết
+                            </span>
+                        </div>
+                    </>
                 }
             >
                 <Meta title={detail.productName} />
