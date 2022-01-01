@@ -1,6 +1,8 @@
 import KnexConnection from "../utils/KnexConnection.js";
 
 export default class AccountModel {
+    static ROLE_VALUES = { ADMIN: 1, MANAGER: 2, EMPLOYEE: 3, USER: 4 };
+
     static getAllByUsernameAndPassword(username, password) {
         return new Promise(async function (resolve, reject) {
             try {

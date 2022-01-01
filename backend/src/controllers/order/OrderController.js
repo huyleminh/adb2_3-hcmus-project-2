@@ -2,6 +2,7 @@ import AppController from "../AppController.js";
 import AuthMiddlewares from "../../middlewares/AuthMiddleware.js";
 import OrderModel from "../../models/OrderModel.js";
 import OrderDetailModel from "../../models/OrderDetailModel.js";
+import AccountModel from "../../models/AccountModel.js";
 
 export default class OrderController extends AppController {
     constructor() {
@@ -11,6 +12,7 @@ export default class OrderController extends AppController {
 
     init() {
         this._router.get("/customer/shipping-info/:orderId", AuthMiddlewares.verifyToken, this.getShippingInfo);
+        this._router.post("/customer/order/checkout", AuthMiddlewares.verifyToken, this.postCheckoutOrder);
         this._router.get("/employee/order-detail/:orderId", AuthMiddlewares.verifyToken, this.getByOrderId);
         this._router.post("/employee/order/confirm", AuthMiddlewares.verifyToken, this.postConfirmOrder);
 
@@ -18,12 +20,12 @@ export default class OrderController extends AppController {
     }
 
     async getShippingInfo(req, res) {
-        const { orderId } = res.locals.params;
-        if (res.locals.token.role !== 4) {
+        if (res.locals.token.role !== AccountModel.ROLE_VALUES.USER) {
             return res.json({ status: 403, meesage: "Bạn không được phép truy cập chức năng này" })
         }
         
         try {
+            const { orderId } = res.locals.params;
             const customerId = res.locals.token.specifierRoleId
             const [shippingInfo] = await OrderModel.getShippingInfoByOrderIdAndCustomerId(orderId, customerId);
 
@@ -36,13 +38,59 @@ export default class OrderController extends AppController {
         }
     }
 
-    async getByOrderId(req, res) {
-        const { orderId } = res.locals.params
-        if (res.locals.token.role !== 3) {
+    async postCheckoutOrder(req, res) {
+        const token = res.locals.token
+        if (token.role !== AccountModel.ROLE_VALUES.USER) {
             return res.json({ status: 403, meesage: "Bạn không được phép truy cập chức năng này" })
         }
 
         try {
+            const { shippingAddress, productList, extra } = res.locals.payload
+
+            // Get current datetime
+            const now = new Date(Date.now())
+            const dateSqlFormat = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`
+            const timeSqlFormat = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`
+            
+            // Compute total price
+            let totalPrice = 0
+            productList.forEach(product => totalPrice += product.quantity * product.price)
+
+            const orderEntity = {
+                MaKH: token.specifierRoleId,
+                ThoiGianLap: dateSqlFormat + " " + timeSqlFormat,
+                PTThanhToan: extra.paymentMethod,
+                GiaGiam: extra.discount,
+                TrangThai: OrderModel.STATUS.NEW_ORDER,
+                DiaChiGiaoHang: shippingAddress,
+            }
+            await OrderModel.insert(orderEntity)
+            
+            const [item] = await OrderModel.getMaxOrderIdByCustomerId(token.specifierRoleId)
+            const orderDetailEntities = productList.map(product => {
+                return {
+                    MaHD: item.orderId,
+                    MaSP: product.productId,
+                    SoLuongMua: product.quantity,
+                    GiaBan: product.price,
+                }
+            })
+            await OrderDetailModel.insertList(orderDetailEntities)
+
+            res.json({ status: 201 })
+        } catch (error) {
+            console.log(error)
+            res.json({ status: 500 })
+        }
+    }
+
+    async getByOrderId(req, res) {
+        if (res.locals.token.role !== AccountModel.ROLE_VALUES.EMPLOYEE) {
+            return res.json({ status: 403, meesage: "Bạn không được phép truy cập chức năng này" })
+        }
+
+        try {
+            const { orderId } = res.locals.params
             const customerId = res.locals.token.specifierRoleId
             const [orderInfo] = await OrderModel.getByOrderIdAndCustomerId(orderId, customerId)
 
@@ -62,12 +110,12 @@ export default class OrderController extends AppController {
     }
 
     async postConfirmOrder(req, res) {
-        const { orderId, status } = res.locals.payload
-        if (res.locals.token.role !== 3) {
+        if (res.locals.token.role !== AccountModel.ROLE_VALUES.EMPLOYEE) {
             return res.json({ status: 403, meesage: "Bạn không được phép truy cập chức năng này" })
         }
 
         try {
+            const { orderId, status } = res.locals.payload
             await OrderModel.updateStatus(orderId, status)
             res.json({ status: 201 })
         } catch {
@@ -78,7 +126,7 @@ export default class OrderController extends AppController {
     async getRevenueDataByYear(req, res) {
         const { year } = req.params;
         const { token } = res.locals;
-        if (token.role !== 2) {
+        if (token.role !== AccountModel.ROLE_VALUES.MANAGER) {
             return res.json({ status: 403, message: "Nhân viên không có quyền xem thống kê" });
         }
 

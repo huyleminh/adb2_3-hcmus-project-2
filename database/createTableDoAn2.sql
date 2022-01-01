@@ -114,6 +114,7 @@ CREATE TABLE HoaDon
 	TongTien INT,
 	GiaGiam INT,
 	TrangThai TINYINT,
+	DiaChiGiaoHang NVARCHAR(MAX),
 
 	CONSTRAINT PK_HD PRIMARY KEY (MaHD)
 )

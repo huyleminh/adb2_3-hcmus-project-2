@@ -1,6 +1,8 @@
 import KnexConnection from "../utils/KnexConnection.js";
 
 export default class OrderModel {
+    static STATUS = { NEW_ORDER: 1, DELIVERING: 2, DONE: 3, CANCEL: 4 }
+
     static getShippingInfoByOrderIdAndCustomerId(orderId, customerId) {
         return new Promise(async function (resolve, reject) {
             try {
@@ -61,6 +63,31 @@ export default class OrderModel {
                         group by TongTienThang.Thang;
                     `
                 )
+                resolve(resultSet)
+            } catch (error) {
+                reject(error)
+            }
+        })
+    }
+
+    static getMaxOrderIdByCustomerId(customerId) {
+        return new Promise(async function (resolve, reject) {
+            try {                
+                const resultSet = await KnexConnection("HoaDon")
+                    .where("MaKH", customerId)
+                    .max({ orderId: "MaHD" })
+                
+                resolve(resultSet)
+            } catch (error) {
+                reject(error)
+            }
+        })
+    }
+
+    static insert(entity) {
+        return new Promise(async function (resolve, reject) {
+            try {
+                const resultSet = await KnexConnection("HoaDon").insert(entity)
                 resolve(resultSet)
             } catch (error) {
                 reject(error)
