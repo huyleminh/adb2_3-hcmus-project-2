@@ -3,6 +3,18 @@ import KnexConnection from "../utils/KnexConnection.js";
 export default class OrderModel {
     static STATUS = { NEW_ORDER: 1, DELIVERING: 2, DONE: 3, CANCEL: 4 }
 
+    static getAllByCustomerId(customerId) {
+        return new Promise(async function (resolve, reject) {
+            try {
+                const resultSet = await KnexConnection("HoaDon").where("MaKH", customerId)
+                resolve(resultSet);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
+
+
     static getShippingInfoByOrderIdAndCustomerId(orderId, customerId) {
         return new Promise(async function (resolve, reject) {
             try {
