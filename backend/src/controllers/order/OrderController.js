@@ -16,6 +16,7 @@ export default class OrderController extends AppController {
         this._router.get("/customer/shipping-info", AuthMiddlewares.verifyToken, this.getShippingInfo);
         this._router.post("/customer/order/checkout", AuthMiddlewares.verifyToken, this.postCheckoutOrder);
         this._router.get("/customer/orders", AuthMiddlewares.verifyToken, this.getAllOrdersByCustomerId);
+        this._router.get("/customer/order-detail/:orderId", AuthMiddlewares.verifyToken, this.getByOrderIdAndCustomerId);
 
         this._router.get("/employee/order-detail/:orderId", AuthMiddlewares.verifyToken, this.getByOrderId);
         this._router.post("/employee/order/confirm", AuthMiddlewares.verifyToken, this.postConfirmOrder);
@@ -113,6 +114,32 @@ export default class OrderController extends AppController {
         }
     }
 
+    async getByOrderIdAndCustomerId(req, res) {
+        const token = res.locals.token
+        if (token.role !== AccountModel.ROLE_VALUES.USER) {
+            return res.json({ status: 403, meesage: "Bạn không được phép truy cập chức năng này" })
+        }
+
+        try {
+            const { orderId } = res.locals.params
+            const customerId = token.specifierRoleId
+            const [orderInfo] = await OrderModel.getByOrderIdAndCustomerId(orderId, customerId)
+
+            if (orderInfo === undefined)
+                res.json({ status: 400, message: "Không tìm thấy đơn hàng" })
+            else {
+                const orderDetail = await OrderDetailModel.getByOrderId(orderId);
+
+                if (orderDetail === undefined)
+                    res.json({ status: 400, message: "Không tìm thấy đơn hàng" })
+                else
+                    res.json({ status: 200, data: { orderInfo, orderDetail } })
+            }
+        } catch {
+            res.json({ status: 500 })
+        }
+    }
+
     async getByOrderId(req, res) {
         if (res.locals.token.role !== AccountModel.ROLE_VALUES.EMPLOYEE) {
             return res.json({ status: 403, meesage: "Bạn không được phép truy cập chức năng này" })
@@ -120,8 +147,7 @@ export default class OrderController extends AppController {
 
         try {
             const { orderId } = res.locals.params
-            const customerId = res.locals.token.specifierRoleId
-            const [orderInfo] = await OrderModel.getByOrderIdAndCustomerId(orderId, customerId)
+            const [orderInfo] = await OrderModel.getByOrderId(orderId)
 
             if (orderInfo === undefined)
                 res.json({ status: 400, message: "Không tìm thấy đơn hàng" })

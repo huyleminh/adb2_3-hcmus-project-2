@@ -14,7 +14,7 @@ export default class OrderDetailModel {
                         { quantity: "SPHoaDon.SoLuongMua" },
                         { price: "SPHoaDon.GiaBan" },
                     )
-            
+                
                 resolve(resultSet)
             } catch (error) {
                 reject(error)
