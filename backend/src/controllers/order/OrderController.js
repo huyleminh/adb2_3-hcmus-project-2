@@ -15,6 +15,8 @@ export default class OrderController extends AppController {
         // this._router.get("/customer/shipping-info/:orderId", AuthMiddlewares.verifyToken, this.getShippingInfo);
         this._router.get("/customer/shipping-info", AuthMiddlewares.verifyToken, this.getShippingInfo);
         this._router.post("/customer/order/checkout", AuthMiddlewares.verifyToken, this.postCheckoutOrder);
+        this._router.get("/customer/orders", AuthMiddlewares.verifyToken, this.getAllOrdersByCustomerId);
+
         this._router.get("/employee/order-detail/:orderId", AuthMiddlewares.verifyToken, this.getByOrderId);
         this._router.post("/employee/order/confirm", AuthMiddlewares.verifyToken, this.postConfirmOrder);
 
@@ -81,6 +83,30 @@ export default class OrderController extends AppController {
             await OrderDetailModel.insertList(orderDetailEntities)
 
             res.json({ status: 201 })
+        } catch (error) {
+            console.log(error)
+            res.json({ status: 500 })
+        }
+    }
+
+    async getAllOrdersByCustomerId(req, res) {
+        const token = res.locals.token
+        if (token.role !== AccountModel.ROLE_VALUES.USER) {
+            return res.json({ status: 403, meesage: "Bạn không được phép truy cập chức năng này" })
+        }
+
+        try {
+            const orderList = await OrderModel.getAllByCustomerId(token.specifierRoleId)
+            const orderListMapped = orderList.map(order => {
+                return {
+                    orderId: order.MaHD,
+                    totalPrice: order.TongTien,
+                    createdAt: order.ThoiGianLap,
+                    status: order.TrangThai,
+                }
+            })
+
+            res.json({ status: 200, data: orderListMapped })
         } catch (error) {
             console.log(error)
             res.json({ status: 500 })
