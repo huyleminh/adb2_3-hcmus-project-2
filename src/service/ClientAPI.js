@@ -30,12 +30,13 @@ ClientAPI.interceptors.response.use(
         // code, statusText, ..., data
         // Any status code that lie within the range of 2xx cause this function to trigger
         // Do something with response data
-        if (response && response.status === 200) return response.data;
-        if (response && (response.status === 403 || response.status === 401)) {
-            AuthService.removeUser();
-            return response.data;
+        if (response && response.status === 200) {
+            if (response && (response.data.status === 403 || response.data.status === 401)) {
+                AuthService.removeUser();
+                return response.data;
+            }
         }
-        return response;
+        return response.data;
     },
     function (error) {
         // Any status codes that falls outside the range of 2xx cause this function to trigger

@@ -39,4 +39,21 @@ export default class CustomerModel {
             }
         });
     }
+
+    static getShippingInfoByCustomerId(customerId) {
+        return new Promise(async function (resolve, reject) {
+            try {
+                const resultSet = await KnexConnection("KhachHang")
+                    .where("MaKH", customerId)
+                    .select(
+                        { customerName: "TenKH" },
+                        { phoneNumber: "SoDienThoai" },
+                        { shippingAddress: "DiaChi" }
+                    );
+                resolve(resultSet);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
 }

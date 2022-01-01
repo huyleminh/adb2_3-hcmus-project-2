@@ -1,16 +1,9 @@
-import AppController from "../AppController.js";
 import AuthMiddlewares from "../../middlewares/AuthMiddleware.js";
-import OrderModel from "../../models/OrderModel.js";
-import OrderDetailModel from "../../models/OrderDetailModel.js";
 import AccountModel from "../../models/AccountModel.js";
-
-const toLocaleDateString = (datetime) => {
-    return `${datetime.getFullYear()}-${datetime.getMonth() + 1}-${datetime.getDatetime()}`
-}
-
-const toLocaleTimeString = (datetime) => {
-    return `${datetime.getHours()}:${datetime.getMinutes()}:${datetime.getSeconds()}`
-}
+import CustomerModel from "../../models/CustomerModel.js";
+import OrderDetailModel from "../../models/OrderDetailModel.js";
+import OrderModel from "../../models/OrderModel.js";
+import AppController from "../AppController.js";
 
 export default class OrderController extends AppController {
     constructor() {
@@ -19,10 +12,9 @@ export default class OrderController extends AppController {
     }
 
     init() {
-        this._router.get("/customer/shipping-info/:orderId", AuthMiddlewares.verifyToken, this.getShippingInfo);
+        // this._router.get("/customer/shipping-info/:orderId", AuthMiddlewares.verifyToken, this.getShippingInfo);
+        this._router.get("/customer/shipping-info", AuthMiddlewares.verifyToken, this.getShippingInfo);
         this._router.post("/customer/order/checkout", AuthMiddlewares.verifyToken, this.postCheckoutOrder);
-
-        this._router.get("/employee/orders", AuthMiddlewares.verifyToken, this.getOrdersWithFiltering);
         this._router.get("/employee/order-detail/:orderId", AuthMiddlewares.verifyToken, this.getByOrderId);
         this._router.post("/employee/order/confirm", AuthMiddlewares.verifyToken, this.postConfirmOrder);
 
@@ -33,11 +25,12 @@ export default class OrderController extends AppController {
         if (res.locals.token.role !== AccountModel.ROLE_VALUES.USER) {
             return res.json({ status: 403, meesage: "Bạn không được phép truy cập chức năng này" })
         }
-        
+
         try {
-            const { orderId } = res.locals.params;
+            // const { orderId } = res.locals.params;
             const customerId = res.locals.token.specifierRoleId
-            const [shippingInfo] = await OrderModel.getShippingInfoByOrderIdAndCustomerId(orderId, customerId);
+            // const [shippingInfo] = await OrderModel.getShippingInfoByOrderIdAndCustomerId(orderId, customerId);
+            const [shippingInfo] = await CustomerModel.getShippingInfoByCustomerId(customerId);
 
             if (shippingInfo === undefined)
                 res.json({ status: 400, message: "Không tìm thấy đơn hàng" })
@@ -59,9 +52,9 @@ export default class OrderController extends AppController {
 
             // Get current datetime
             const now = new Date(Date.now())
-            const dateSqlFormat = toLocaleDateString(now)
-            const timeSqlFormat = toLocaleTimeString(now)
-            
+            const dateSqlFormat = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`
+            const timeSqlFormat = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`
+
             // Compute total price
             let totalPrice = 0
             productList.forEach(product => totalPrice += product.quantity * product.price)
@@ -75,7 +68,7 @@ export default class OrderController extends AppController {
                 DiaChiGiaoHang: shippingAddress,
             }
             await OrderModel.insert(orderEntity)
-            
+
             const [item] = await OrderModel.getMaxOrderIdByCustomerId(token.specifierRoleId)
             const orderDetailEntities = productList.map(product => {
                 return {
@@ -88,26 +81,8 @@ export default class OrderController extends AppController {
             await OrderDetailModel.insertList(orderDetailEntities)
 
             res.json({ status: 201 })
-        } catch {
-            res.json({ status: 500 })
-        }
-    }
-
-    async getOrdersWithFiltering(req, res) {
-        const token = res.locals.token
-        if (token.role !== AccountModel.ROLE_VALUES.EMPLOYEE) {
-            return res.json({ status: 403, message: "Bạn không được phép truy cập chức năng này" })
-        }
-
-        try {
-            const { status, fromDate, toDate } = res.locals.query
-            const tomorrowOfToDate = new Date(toDate + " 24:00:00+07:00")
-            const tomorrowOfToDateAsString = toLocaleDateString(toLocaleDateString)
-
-            const orderList = await OrderModel.filterByStatusAndDate(status, fromDate, tomorrowOfToDateAsString)
-            console.log(orderList.length)
-            res.json({ status: 200, data: orderList })
-        } catch {
+        } catch (error) {
+            console.log(error)
             res.json({ status: 500 })
         }
     }

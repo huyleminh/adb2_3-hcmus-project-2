@@ -69,7 +69,7 @@ function PrivateRoute(props) {
         const AuthenticatedLayout = component;
         return <Route {...rest} component={AuthenticatedLayout} />;
     } else {
-        return <Redirect to="/403" />;
+        return <Redirect to="/login" />;
     }
 }
 
