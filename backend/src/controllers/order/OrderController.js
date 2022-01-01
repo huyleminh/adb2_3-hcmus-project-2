@@ -17,6 +17,7 @@ export default class OrderController extends AppController {
         this._router.post("/customer/order/checkout", AuthMiddlewares.verifyToken, this.postCheckoutOrder);
         this._router.get("/customer/orders", AuthMiddlewares.verifyToken, this.getAllOrdersByCustomerId);
         this._router.get("/customer/order-detail/:orderId", AuthMiddlewares.verifyToken, this.getByOrderIdAndCustomerId);
+        this._router.post("/customer/order/change-status", AuthMiddlewares.verifyToken, this.postUpdateOrderStatus);
 
         this._router.get("/employee/order-detail/:orderId", AuthMiddlewares.verifyToken, this.getByOrderId);
         this._router.post("/employee/order/confirm", AuthMiddlewares.verifyToken, this.postConfirmOrder);
@@ -135,6 +136,20 @@ export default class OrderController extends AppController {
                 else
                     res.json({ status: 200, data: { orderInfo, orderDetail } })
             }
+        } catch {
+            res.json({ status: 500 })
+        }
+    }
+
+    async postUpdateOrderStatus(req, res) {
+        if (res.locals.token.role !== AccountModel.ROLE_VALUES.USER) {
+            return res.json({ status: 403, meesage: "Bạn không được phép truy cập chức năng này" })
+        }
+
+        try {
+            const { orderId, status } = res.locals.payload
+            await OrderModel.updateStatus(orderId, status)
+            res.json({ status: 201 })
         } catch {
             res.json({ status: 500 })
         }
