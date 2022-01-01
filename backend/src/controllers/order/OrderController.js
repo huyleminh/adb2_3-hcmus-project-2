@@ -4,6 +4,14 @@ import OrderModel from "../../models/OrderModel.js";
 import OrderDetailModel from "../../models/OrderDetailModel.js";
 import AccountModel from "../../models/AccountModel.js";
 
+const toLocaleDateString = (datetime) => {
+    return `${datetime.getFullYear()}-${datetime.getMonth() + 1}-${datetime.getDatetime()}`
+}
+
+const toLocaleTimeString = (datetime) => {
+    return `${datetime.getHours()}:${datetime.getMinutes()}:${datetime.getSeconds()}`
+}
+
 export default class OrderController extends AppController {
     constructor() {
         super();
@@ -13,6 +21,8 @@ export default class OrderController extends AppController {
     init() {
         this._router.get("/customer/shipping-info/:orderId", AuthMiddlewares.verifyToken, this.getShippingInfo);
         this._router.post("/customer/order/checkout", AuthMiddlewares.verifyToken, this.postCheckoutOrder);
+
+        this._router.get("/employee/orders", AuthMiddlewares.verifyToken, this.getOrdersWithFiltering);
         this._router.get("/employee/order-detail/:orderId", AuthMiddlewares.verifyToken, this.getByOrderId);
         this._router.post("/employee/order/confirm", AuthMiddlewares.verifyToken, this.postConfirmOrder);
 
@@ -49,8 +59,8 @@ export default class OrderController extends AppController {
 
             // Get current datetime
             const now = new Date(Date.now())
-            const dateSqlFormat = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`
-            const timeSqlFormat = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`
+            const dateSqlFormat = toLocaleDateString(now)
+            const timeSqlFormat = toLocaleTimeString(now)
             
             // Compute total price
             let totalPrice = 0
@@ -78,8 +88,26 @@ export default class OrderController extends AppController {
             await OrderDetailModel.insertList(orderDetailEntities)
 
             res.json({ status: 201 })
-        } catch (error) {
-            console.log(error)
+        } catch {
+            res.json({ status: 500 })
+        }
+    }
+
+    async getOrdersWithFiltering(req, res) {
+        const token = res.locals.token
+        if (token.role !== AccountModel.ROLE_VALUES.EMPLOYEE) {
+            return res.json({ status: 403, message: "Bạn không được phép truy cập chức năng này" })
+        }
+
+        try {
+            const { status, fromDate, toDate } = res.locals.query
+            const tomorrowOfToDate = new Date(toDate + " 24:00:00+07:00")
+            const tomorrowOfToDateAsString = toLocaleDateString(toLocaleDateString)
+
+            const orderList = await OrderModel.filterByStatusAndDate(status, fromDate, tomorrowOfToDateAsString)
+            console.log(orderList.length)
+            res.json({ status: 200, data: orderList })
+        } catch {
             res.json({ status: 500 })
         }
     }
