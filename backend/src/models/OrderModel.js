@@ -84,6 +84,33 @@ export default class OrderModel {
         })
     }
 
+    // { orderId, customerId, employeeId, createdAt, paymentMethod, totalPrice, discount, status }
+    static filterByStatusAndDate(status, startDate, endDate) {
+        return new Promise(async function (resolve, reject) {
+            try {
+                const resultSet = await KnexConnection("HoaDon")
+                    .where("TrangThai", status)
+                    .andWhere("ThoiGianLap", ">=", startDate)
+                    .andWhere("ThoiGianLap", "<", endDate)
+                    .select(
+                        { orderId: "MaHD" },
+                        { customerId: "MaKH" },
+                        { employeeId: "NVLapHD" },
+                        { createdAt: "ThoiGianLap" },
+                        { paymentMethod: "PTThanhToan" },
+                        { totalPrice: "TongTien" },
+                        { discount: "GiaGiam" },
+                        { status: "TrangThai" },
+                        { shippingAdress: "DiaChiGiaoHang" },
+                    )
+                    
+                resolve(resultSet)
+            } catch (error) {
+                reject(error)
+            }
+        })
+    }
+
     static insert(entity) {
         return new Promise(async function (resolve, reject) {
             try {
