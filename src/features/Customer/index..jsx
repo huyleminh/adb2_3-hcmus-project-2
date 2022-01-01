@@ -3,19 +3,20 @@ import React from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import AppFooter from "../../components/Footer";
 import AppHeader from "../../components/Header";
+import PrivateRoute from "../../components/PrivateRoute";
 import NotFound from "../Errors/404";
 import CartFeature from "./Cart";
 import CheckoutFeature from "./Checkout";
 import MenuFeature from "./Menu";
 import ProfileFeature from "./Profile";
-import "./styles.css"
+import "./styles.css";
 
 CustomerFeature.propTypes = {};
 
 function CustomerFeature(props) {
     return (
         <Layout>
-            <AppHeader/>
+            <AppHeader />
 
             <Layout.Content className="app-main">
                 <Switch>
@@ -24,7 +25,7 @@ function CustomerFeature(props) {
                     <Route path={`/menu`} component={MenuFeature} />
                     <Route path="/profile" component={ProfileFeature} />
                     <Route exact path="/cart" component={CartFeature} />
-                    <Route exact path="/checkout" component={CheckoutFeature} />
+                    <PrivateRoute exact path="/checkout" component={CheckoutFeature} />
 
                     <Route>
                         <Redirect to="/404">

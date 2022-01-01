@@ -17,6 +17,7 @@ function CartFeature(props) {
 
     useEffect(() => {
         document.title = "Giỏ hàng của tôi";
+        localStorage.removeItem("cart");
 
         const fetchCustomerCart = async () => {
             setIsLoading(true);
