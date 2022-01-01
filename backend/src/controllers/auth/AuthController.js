@@ -6,8 +6,6 @@ import EmployeeModel from "../../models/EmployeeModel.js";
 import AppConstants from "../../shared/AppConstants.js";
 import AppController from "../AppController.js";
 
-const ROLE_VALUES = { ADMIN: 1, MANAGER: 2, EMPLOYEE: 3, USER: 4 };
-
 export default class AuthController extends AppController {
     constructor() {
         super();
@@ -61,7 +59,7 @@ export default class AuthController extends AppController {
             }
 
             let specifierRoleId;
-            if (users[0].VaiTro == ROLE_VALUES.EMPLOYEE) {
+            if (users[0].VaiTro == AccountModel.ROLE_VALUES.EMPLOYEE) {
                 const [employee] = await EmployeeModel.getByAccountId(users[0].MaTK);
                 if (employee !== undefined)
                     specifierRoleId = employee.MaNV;
@@ -145,7 +143,7 @@ export default class AuthController extends AppController {
 
     async postCreateEmployeeAccount(req, res) {
         const payload = res.locals.payload
-        if (res.locals.token.role !== 1) {
+        if (res.locals.token.role !== AccountModel.ROLE_VALUES.ADMIN) {
             return res.json({ status: 403, meesage: "Bạn không được phép truy cập chức năng này" })
         }
 

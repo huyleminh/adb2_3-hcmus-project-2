@@ -21,4 +21,15 @@ export default class OrderDetailModel {
             }
         })
     }
+
+    static insertList(entities) {
+        return new Promise(async function (resolve, reject) {
+            try {
+                const resultSet = await KnexConnection("SPHoaDon").insert(entities)
+                resolve(resultSet)
+            } catch (error) {
+                reject(error)
+            }
+        })
+    }
 }

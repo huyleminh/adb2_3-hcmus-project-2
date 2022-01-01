@@ -43,12 +43,12 @@ FOR UPDATE
 AS
 BEGIN
 	UPDATE HoaDon
-	SET HoaDon.TongTien = HoaDon.TongTien - INSERTED.GiaGiam
+	SET HoaDon.TongTien = HoaDon.TongTien + INSERTED.GiaGiam
 	FROM INSERTED
 	WHERE HoaDon.MaHD = INSERTED.MaHD
 
 	UPDATE HoaDon
-	SET HoaDon.TongTien = HoaDon.TongTien + DELETED.GiaGiam
+	SET HoaDon.TongTien = HoaDon.TongTien - DELETED.GiaGiam
 	FROM DELETED
 	WHERE HoaDon.MaHD = DELETED.MaHD
 END
@@ -65,22 +65,18 @@ BEGIN
 		(SoLuongMua * GiaBan) AS ThanhTien
 	INTO INSERTED_TinhThanhTien
 	FROM INSERTED
+	select * from INSERTED_TinhThanhTien
 
 	UPDATE SPHoaDon
-	SET ThanhTien = SPHoaDon.SoLuongMua * SPHoaDon.GiaBan
+	SET ThanhTien = INSERTED_TinhThanhTien.ThanhTien
 	FROM INSERTED_TinhThanhTien
 	WHERE SPHoaDon.MaHD = INSERTED_TinhThanhTien.MaHD AND SPHoaDon.MaSP = INSERTED_TinhThanhTien.MaSP
 
 	UPDATE HoaDon
-	SET HoaDon.TongTien = HoaDon.TongTien + INSERTED_TinhThanhTien.ThanhTien
+	SET HoaDon.TongTien = dbo.fn_TinhTongTien(HoaDon.MaHD) - HoaDon.GiaGiam
 	FROM INSERTED_TinhThanhTien
 	WHERE HoaDon.MaHD = INSERTED_TinhThanhTien.MaHD
 
 	DROP TABLE INSERTED_TinhThanhTien
-
-	UPDATE HoaDon
-	SET HoaDon.TongTien = HoaDon.TongTien - DELETED.ThanhTien
-	FROM DELETED
-	WHERE HoaDon.MaHD = DELETED.MaHD
 END
 GO
