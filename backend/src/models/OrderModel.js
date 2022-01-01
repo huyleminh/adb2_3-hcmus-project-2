@@ -14,7 +14,6 @@ export default class OrderModel {
         });
     }
 
-
     static getShippingInfoByOrderIdAndCustomerId(orderId, customerId) {
         return new Promise(async function (resolve, reject) {
             try {
@@ -41,11 +40,31 @@ export default class OrderModel {
         return new Promise(async function (resolve, reject) {
             try {
                 const resultSet = await KnexConnection("HoaDon")
-                    .join("KhachHang", "KhachHang.MaKH", "=", "HoaDon.MaKH")
                     .where({
                         "HoaDon.MaHD": orderId,
                         "HoaDon.MaKH": customerId,
                     })
+                    .select(
+                        { orderId: "HoaDon.MaHD" },
+                        { createdAt: "HoaDon.ThoiGianLap" },
+                        { totalPrice: "HoaDon.TongTien" },
+                        { discount: "HoaDon.GiaGiam" },
+                        { status: "HoaDon.TrangThai" },
+                    );
+
+                resolve(resultSet)
+            } catch (error) {
+                reject(error)
+            }
+        })
+    }
+
+    static getByOrderId(orderId) {
+        return new Promise(async function (resolve, reject) {
+            try {
+                const resultSet = await KnexConnection("HoaDon")
+                    .join("KhachHang", "KhachHang.MaKH", "=", "HoaDon.MaKH")
+                    .where("HoaDon.MaHD", orderId)
                     .select(
                         { orderId: "HoaDon.MaHD" },
                         { customerName: "KhachHang.TenKH" },
