@@ -21,12 +21,12 @@ moment.locale("vi");
 
 const tags = {
     1: (
-        <Tag icon={<SyncOutlined spin />} color="processing">
+        <Tag icon={<SyncOutlined spin />} color="warning">
             Đơn mới
         </Tag>
     ),
     2: (
-        <Tag icon={<SyncOutlined spin />} color="warning">
+        <Tag icon={<SyncOutlined spin />} color="processing">
             Đang giao
         </Tag>
     ),
@@ -262,17 +262,6 @@ function OrderDetailPage(props) {
                         {isLoading ? (
                             <Skeleton active />
                         ) : (
-                            // <div className="action-block">
-                            //     {/* {data.action ? (
-                            //         <button className="action-btn">{data.action}</button>
-                            //     ) : null} */}
-                            //     <button
-                            //         className="cancel-btn"
-                            //         // disabled={data.action ? false : true}
-                            //     >
-                            //         Hủy đơn
-                            //     </button>
-                            // </div>
                             order.orderInfo?.status && mappedButtons(order.orderInfo?.status)
                         )}
                     </Descriptions.Item>
