@@ -45,7 +45,7 @@ function ProductDetail() {
             imageURL: fakeData.image
         })
         setIsLoading(false);
-    }, []);
+    }, [productId]);
 
     const preview = (event) => {
         if (event.target.files.length !== 0) {

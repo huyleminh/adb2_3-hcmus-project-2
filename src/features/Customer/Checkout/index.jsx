@@ -118,7 +118,7 @@ function CheckoutFeature(props) {
                 return 0;
             case "discount20": {
                 const discountFee = checkoutInfo.productInfo.total * 0.2;
-                return discountFee > 500000 ? 500000 : discountFee;
+                return discountFee > 100000 ? 100000 : discountFee;
             }
             case "discount10":
                 return checkoutInfo.productInfo.total * 0.1;
@@ -202,7 +202,7 @@ function CheckoutFeature(props) {
                                             onChange={onChangeExtraDiscount}
                                         >
                                             <Option key="discount20" value="discount20">
-                                                Giảm 20% tối đa 500K
+                                                Giảm 20% tối đa 100K
                                             </Option>
                                             <Option key="discount10" value="discount10">
                                                 Giảm 10%

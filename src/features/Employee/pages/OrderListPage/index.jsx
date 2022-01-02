@@ -77,7 +77,7 @@ function OrderListPage(props) {
             render: (status) => {
                 if (status === EmployeeConst.ORDER_STATUS.NEW) {
                     return (
-                        <Tag icon={<SyncOutlined spin />} color="processing">
+                        <Tag icon={<SyncOutlined spin />} color="warning">
                             Đơn mới
                         </Tag>
                     );
@@ -85,7 +85,7 @@ function OrderListPage(props) {
 
                 if (status === EmployeeConst.ORDER_STATUS.DELIVERING) {
                     return (
-                        <Tag icon={<SyncOutlined spin />} color="warning">
+                        <Tag icon={<SyncOutlined spin />} color="processing">
                             Đang giao
                         </Tag>
                     );

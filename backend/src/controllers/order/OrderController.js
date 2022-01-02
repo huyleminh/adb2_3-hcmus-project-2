@@ -134,6 +134,7 @@ export default class OrderController extends AppController {
                     totalPrice: order.TongTien,
                     createdAt: order.ThoiGianLap,
                     status: order.TrangThai,
+                    discount: order.GiaGiam
                 }
             })
 
