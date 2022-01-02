@@ -1,10 +1,5 @@
-import {
-    CheckCircleOutlined,
-    LoadingOutlined,
-    MinusCircleOutlined,
-    SyncOutlined,
-} from "@ant-design/icons";
-import { Button, Descriptions, message, Skeleton, Spin, Tag } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
+import { Button, Descriptions, message, Skeleton, Spin } from "antd";
 import moment from "moment";
 import "moment/locale/vi";
 import React, { useEffect, useState } from "react";
@@ -12,34 +7,12 @@ import NumberFormat from "react-number-format";
 import { useHistory, useParams } from "react-router-dom";
 import ProductTable from "../../../../components/ProductTable";
 import ClientAPI from "../../../../service/ClientAPI";
+import { ORDER_PAYMENT_TAGS, ORDER_STATUS_TAGS } from "../../../../shared/OrderTableConfig";
 import "./styles.css";
 
 InvoiceDetail.propTypes = {};
 
 moment.locale("vi");
-
-const tags = {
-    1: (
-        <Tag icon={<SyncOutlined spin />} color="warning">
-            Đang xử lý
-        </Tag>
-    ),
-    2: (
-        <Tag icon={<SyncOutlined spin />} color="processing">
-            Đang giao hàng
-        </Tag>
-    ),
-    3: (
-        <Tag icon={<CheckCircleOutlined />} color="success">
-            Hoàn tất
-        </Tag>
-    ),
-    4: (
-        <Tag icon={<MinusCircleOutlined />} color="error">
-            Đã hủy
-        </Tag>
-    ),
-};
 
 function InvoiceDetail() {
     const { id } = useParams();
@@ -96,7 +69,7 @@ function InvoiceDetail() {
             console.log(error);
             message.error("Không thể hủy đơn hàng", 1);
         }
-    }
+    };
 
     return (
         <div className="invoice-detail-container">
@@ -125,16 +98,30 @@ function InvoiceDetail() {
                         )}
                     </Descriptions.Item>
                     <Descriptions.Item label="Ngày lập" span={1}>
-                        {isLoading ? <Skeleton active /> : data.orderInfo?.createdAt}
+                        {isLoading ? (
+                            <Skeleton active />
+                        ) : (
+                            data.orderInfo?.createdAt &&
+                            moment(data.orderInfo.createdAt)
+                                .utcOffset(0)
+                                .format("DD/MM/YYYY HH:mm:ss")
+                        )}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Trạng thái đơn hàng" span={2}>
-                        {isLoading ? <Skeleton active /> : tags[data.orderInfo?.status]}
+                    <Descriptions.Item label="Phương thức thanh toán" span={1}>
+                        {isLoading ? <Skeleton active /> : ORDER_PAYMENT_TAGS[data.orderInfo?.paymentMethod]}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Trạng thái đơn hàng" span={1}>
+                        {isLoading ? <Skeleton active /> : ORDER_STATUS_TAGS[data.orderInfo?.status]}
                     </Descriptions.Item>
                     <Descriptions.Item label="Thao tác" span={1}>
                         {isLoading ? (
                             <Skeleton active />
                         ) : (
-                            data.orderInfo?.status === 1 && <Button type="primary" danger onClick={handleCancelOrder} >Hủy đơn</Button>
+                            data.orderInfo?.status === 1 && (
+                                <Button type="primary" danger onClick={handleCancelOrder}>
+                                    Hủy đơn
+                                </Button>
+                            )
                         )}
                     </Descriptions.Item>
                 </Descriptions>

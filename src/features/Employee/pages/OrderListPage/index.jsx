@@ -1,16 +1,15 @@
 import {
-    CheckCircleOutlined,
-    FilterOutlined,
-    MinusCircleOutlined,
-    SyncOutlined,
+    FilterOutlined
 } from "@ant-design/icons";
-import { Button, DatePicker, Divider, Form, message, Select, Table, Tag, Typography } from "antd";
+import { Button, DatePicker, Divider, Form, message, Select, Table, Typography } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import NumberFormat from "react-number-format";
 import { Link, useHistory } from "react-router-dom";
 import ClientAPI from "../../../../service/ClientAPI";
+import { ORDER_STATUS_ENUM } from "../../../../shared/OrderEnum";
+import { ORDER_PAYMENT_TAGS, ORDER_STATUS_TAGS } from "../../../../shared/OrderTableConfig";
 import EmployeeConst from "../../shared/EmployeeConst";
 
 moment.locale("vi");
@@ -23,7 +22,7 @@ function OrderListPage(props) {
     const history = useHistory();
     const [filterForm] = useForm();
     const [filter, setFilter] = useState({
-        status: EmployeeConst.ORDER_STATUS.NEW,
+        status: ORDER_STATUS_ENUM.NEW,
         date: {
             fromDate: moment(new Date(), "DD/MM/YYYY"),
             toDate: moment(new Date(), "DD/MM/YYYY"),
@@ -58,16 +57,7 @@ function OrderListPage(props) {
             dataIndex: "paymentMethod",
             key: "paymentMethod",
             render: (paymentMethod) => {
-                switch (paymentMethod) {
-                    case 1:
-                        return <Tag color="success">COD</Tag>;
-                    case 2:
-                        return <Tag color="processing">Thanh toán Online</Tag>;
-                    case 3:
-                        return <Tag color="warning">Khác</Tag>;
-                    default:
-                        return <Tag color="error">Lỗi</Tag>;
-                }
+                return ORDER_PAYMENT_TAGS[paymentMethod];
             },
         },
         {
@@ -75,35 +65,7 @@ function OrderListPage(props) {
             dataIndex: "status",
             key: "status",
             render: (status) => {
-                if (status === EmployeeConst.ORDER_STATUS.NEW) {
-                    return (
-                        <Tag icon={<SyncOutlined spin />} color="warning">
-                            Đơn mới
-                        </Tag>
-                    );
-                }
-
-                if (status === EmployeeConst.ORDER_STATUS.DELIVERING) {
-                    return (
-                        <Tag icon={<SyncOutlined spin />} color="processing">
-                            Đang giao
-                        </Tag>
-                    );
-                }
-
-                if (status === EmployeeConst.ORDER_STATUS.SUCCESS) {
-                    return (
-                        <Tag icon={<CheckCircleOutlined />} color="success">
-                            Hoàn tất
-                        </Tag>
-                    );
-                }
-
-                return (
-                    <Tag icon={<MinusCircleOutlined />} color="error">
-                        Đã hủy
-                    </Tag>
-                );
+                return ORDER_STATUS_TAGS[status];
             },
         },
         {
@@ -120,7 +82,7 @@ function OrderListPage(props) {
             },
         },
         {
-            title: "Tổng tiền",
+            title: "Giá trị đơn hàng",
             dataIndex: "totalPrice",
             key: "totalPrice",
             render: (totalPrice) => {

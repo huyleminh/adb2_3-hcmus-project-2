@@ -1,9 +1,10 @@
-import { message, Select, Spin } from "antd";
+import { Divider, message, Select, Space, Spin, Typography } from "antd";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import InvoiceTable from "../../../../components/InvoiceTable";
 import ClientAPI from "../../../../service/ClientAPI";
+import { ORDER_STATUS_ENUM } from "../../../../shared/OrderEnum";
 import "./styles.css";
 
 InvoiceHistory.propTypes = {};
@@ -13,23 +14,23 @@ const { Option } = Select;
 const sortBy = [
     {
         name: "Mặc định",
-        key: "default",
+        key: 0,
     },
     {
         name: "Hoàn tất",
-        key: "done",
+        key: ORDER_STATUS_ENUM.SUCCESS,
     },
     {
         name: "Đang xử lý",
-        key: "processing",
+        key: ORDER_STATUS_ENUM.NEW,
     },
     {
         name: "Đang giao hàng",
-        key: "delivery",
+        key: ORDER_STATUS_ENUM.DELIVERING,
     },
     {
         name: "Đã hủy",
-        key: "cancel",
+        key: ORDER_STATUS_ENUM.CANCELED,
     },
 ];
 
@@ -42,6 +43,7 @@ function InvoiceHistory() {
     const history = useHistory();
 
     useEffect(() => {
+        document.title = "Lịch sử đơn hàng"
         const fetchOrderHistory = async () => {
             setIsLoading(true);
 
@@ -75,14 +77,14 @@ function InvoiceHistory() {
     };
 
     const displayData =
-        sort.key === "default"
+        sort.key === 0
             ? JSON.parse(JSON.stringify(data))
             : data.filter((element) => element.status === sort.key);
 
     return (
         <div className="invoice-history-container">
-            <div className="invoice-history-filterbar">
-                <span>Bộ lọc</span>
+            <Space direction="horizonal" align="center">
+                <Typography.Text strong>Bộ lọc:</Typography.Text>
                 <Select
                     disabled={isLoading}
                     value={sort.name}
@@ -97,7 +99,10 @@ function InvoiceHistory() {
                         );
                     })}
                 </Select>
-            </div>
+            </Space>
+
+            <Divider orientation="left">Danh sách đơn hàng</Divider>
+
             <div className="invoice-history-container-table">
                 {isLoading ? (
                     <div className="invoice-history-loading">
