@@ -24,7 +24,7 @@ function RevenuePage(props) {
     };
 
     useEffect(() => {
-        document.title = "Thống kê doanh thu";
+        document.title = "Quản lý | Thống kê doanh thu";
 
         const fetchStatisticPerYear = async () => {
             setIsLoading(true);

@@ -1,8 +1,5 @@
 import {
-    CheckCircleOutlined,
-    LoadingOutlined,
-    MinusCircleOutlined,
-    SyncOutlined,
+    LoadingOutlined
 } from "@ant-design/icons";
 import { Button, Descriptions, message, Skeleton, Space, Spin, Tag } from "antd";
 import moment from "moment";
@@ -12,36 +9,14 @@ import NumberFormat from "react-number-format";
 import { useHistory, useParams } from "react-router-dom";
 import ProductTable from "../../../../components/ProductTable";
 import ClientAPI from "../../../../service/ClientAPI";
+import { ORDER_STATUS_ENUM } from "../../../../shared/OrderEnum";
+import { ORDER_PAYMENT_TAGS, ORDER_STATUS_TAGS } from "../../../../shared/OrderTableConfig";
 import EmployeeConst from "../../shared/EmployeeConst";
 import "./styles.css";
 
 OrderDetailPage.propTypes = {};
 
 moment.locale("vi");
-
-const tags = {
-    1: (
-        <Tag icon={<SyncOutlined spin />} color="warning">
-            Đơn mới
-        </Tag>
-    ),
-    2: (
-        <Tag icon={<SyncOutlined spin />} color="processing">
-            Đang giao
-        </Tag>
-    ),
-    3: (
-        <Tag icon={<CheckCircleOutlined />} color="success">
-            Hoàn tất
-        </Tag>
-    ),
-
-    4: (
-        <Tag icon={<MinusCircleOutlined />} color="error">
-            Đã hủy
-        </Tag>
-    ),
-};
 
 function OrderDetailPage(props) {
     const { orderId } = useParams();
@@ -85,10 +60,9 @@ function OrderDetailPage(props) {
         try {
             const res = await ClientAPI.post("/employee/order/confirm", {
                 orderId: order.orderInfo.orderId,
-                status: 4,
+                status: ORDER_STATUS_ENUM.CANCELED,
             });
 
-            console.log(res);
             if (res.status === 201) {
                 message.success("Hủy đơn hàng thành công", 1);
                 setTimeout(() => {
@@ -110,10 +84,9 @@ function OrderDetailPage(props) {
         try {
             const res = await ClientAPI.post("/employee/order/confirm", {
                 orderId: order.orderInfo.orderId,
-                status: 2,
+                status: ORDER_STATUS_ENUM.DELIVERING,
             });
 
-            console.log(res);
             if (res.status === 201) {
                 setTimeout(() => {
                     window.location.reload();
@@ -134,10 +107,9 @@ function OrderDetailPage(props) {
         try {
             const res = await ClientAPI.post("/employee/order/confirm", {
                 orderId: order.orderInfo.orderId,
-                status: 3,
+                status: ORDER_STATUS_ENUM.SUCCESS,
             });
 
-            console.log(res);
             if (res.status === 201) {
                 setTimeout(() => {
                     window.location.reload();
@@ -151,19 +123,6 @@ function OrderDetailPage(props) {
         } catch (error) {
             console.log(error);
             message.error("Không thể hoàn thành đơn hàng", 1);
-        }
-    };
-
-    const mappedPaymentMethod = (paymentMethod) => {
-        switch (paymentMethod) {
-            case 1:
-                return <Tag color="success">COD</Tag>;
-            case 2:
-                return <Tag color="processing">Thanh toán Online</Tag>;
-            case 3:
-                return <Tag color="warning">Khác</Tag>;
-            default:
-                return <Tag color="error">Lỗi</Tag>;
         }
     };
 
@@ -214,7 +173,7 @@ function OrderDetailPage(props) {
                             <Skeleton active />
                         ) : (
                             order.orderInfo?.paymentMethod &&
-                            mappedPaymentMethod(order.orderInfo.paymentMethod)
+                            ORDER_PAYMENT_TAGS[order.orderInfo.paymentMethod]
                         )}
                     </Descriptions.Item>
                     <Descriptions.Item label="Ngày lập" span={1}>
@@ -256,7 +215,11 @@ function OrderDetailPage(props) {
                         )}
                     </Descriptions.Item>
                     <Descriptions.Item label="Trạng thái đơn hàng" span={2}>
-                        {isLoading ? <Skeleton active /> : tags[order.orderInfo?.status]}
+                        {isLoading ? (
+                            <Skeleton active />
+                        ) : (
+                            ORDER_STATUS_TAGS[order.orderInfo?.status]
+                        )}
                     </Descriptions.Item>
                     <Descriptions.Item label="Thao tác" span={1}>
                         {isLoading ? (

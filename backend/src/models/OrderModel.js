@@ -50,6 +50,7 @@ export default class OrderModel {
                         { totalPrice: "HoaDon.TongTien" },
                         { discount: "HoaDon.GiaGiam" },
                         { status: "HoaDon.TrangThai" },
+                        { paymentMethod: "HoaDon.PTThanhToan"},
                     );
 
                 resolve(resultSet)
