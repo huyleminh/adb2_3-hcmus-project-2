@@ -1,4 +1,5 @@
 import {
+    AppstoreOutlined,
     CheckSquareOutlined,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
@@ -65,6 +66,10 @@ function ManagerFeature(props) {
                         <Link to={`${match.path}/statistic/best-selling`}>
                             Thống kê sản phẩm bán chạy
                         </Link>
+                    </Menu.Item>
+
+                    <Menu.Item key={`/menu/categories`} icon={<AppstoreOutlined />}>
+                        <Link to={`/menu/categories`}>Về cửa hàng</Link>
                     </Menu.Item>
                 </Menu>
             </Sider>

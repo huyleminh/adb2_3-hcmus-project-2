@@ -3,7 +3,8 @@ import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
     UserOutlined,
-    AppstoreAddOutlined
+    AppstoreAddOutlined,
+    AppstoreOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 import React, { useState } from "react";
@@ -11,8 +12,10 @@ import {
     Link,
     Redirect,
     Route,
-    Switch, useHistory, useLocation,
-    useRouteMatch
+    Switch,
+    useHistory,
+    useLocation,
+    useRouteMatch,
 } from "react-router-dom";
 import HRM from "./pages/HRM";
 import PM from "./pages/PM";
@@ -53,11 +56,20 @@ function AdminFeature(props) {
                     theme="dark"
                     mode="inline"
                 >
-                    <Menu.Item key={`${match.path}/human-resource-management`} icon={<UsergroupAddOutlined />}>
+                    <Menu.Item
+                        key={`${match.path}/human-resource-management`}
+                        icon={<UsergroupAddOutlined />}
+                    >
                         <Link to={`${match.path}/human-resource-management`}>Quản lý nhân sự</Link>
                     </Menu.Item>
-                    <Menu.Item key={`${match.path}/product-management`} icon={<AppstoreAddOutlined />}>
+                    <Menu.Item
+                        key={`${match.path}/product-management`}
+                        icon={<AppstoreAddOutlined />}
+                    >
                         <Link to={`${match.path}/product-management`}>Quản lý sản phẩm</Link>
+                    </Menu.Item>
+                    <Menu.Item key={`/menu/categories`} icon={<AppstoreOutlined />}>
+                        <Link to={`/menu/categories`}>Về cửa hàng</Link>
                     </Menu.Item>
                 </Menu>
             </Sider>
@@ -71,7 +83,7 @@ function AdminFeature(props) {
                     )}
 
                     <div className="custom-site-content__user">
-                        <UserOutlined style={{fontSize: "1.25rem"}} id="dashboard-user" />
+                        <UserOutlined style={{ fontSize: "1.25rem" }} id="dashboard-user" />
                         <div className="custom-site-content__dropdown">
                             <span
                                 onClick={() => {
@@ -87,13 +99,32 @@ function AdminFeature(props) {
 
                 <Content className="custom-site-main">
                     <Switch>
-                        <Redirect exact from={`${match.path}`} to={`${match.path}/human-resource-management`} />
-                        <Route exact path={`${match.path}/human-resource-management`} component={HRM} />
+                        <Redirect
+                            exact
+                            from={`${match.path}`}
+                            to={`${match.path}/human-resource-management`}
+                        />
+                        <Route
+                            exact
+                            path={`${match.path}/human-resource-management`}
+                            component={HRM}
+                        />
                         <Route exact path={`${match.path}/product-management`} component={PM} />
-                        <Route exact path={`${match.path}/product-management/create`} component={CreateProduct} />
-                        <Route exact path={`${match.path}/human-resource-management/create`} component={CreateEmployee} />
+                        <Route
+                            exact
+                            path={`${match.path}/product-management/create`}
+                            component={CreateProduct}
+                        />
+                        <Route
+                            exact
+                            path={`${match.path}/human-resource-management/create`}
+                            component={CreateEmployee}
+                        />
 
-                        <Route path={`${match.path}/product-management/:productId`} component={ProductDetail} />
+                        <Route
+                            path={`${match.path}/product-management/:productId`}
+                            component={ProductDetail}
+                        />
 
                         <Route>
                             <Redirect to="/404" />

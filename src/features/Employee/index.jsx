@@ -1,4 +1,5 @@
 import {
+    AppstoreOutlined,
     CheckSquareOutlined,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
@@ -11,7 +12,9 @@ import {
     Link,
     Redirect,
     Route,
-    Switch, useHistory, useLocation,
+    Switch,
+    useHistory,
+    useLocation,
     useRouteMatch
 } from "react-router-dom";
 import CheckinPage from "./pages/CheckinPage";
@@ -57,6 +60,9 @@ function EmployeeFeature(props) {
                     <Menu.Item key={`${match.path}/checkin`} icon={<CheckSquareOutlined />}>
                         <Link to={`${match.path}/checkin`}>Điểm danh</Link>
                     </Menu.Item>
+                    <Menu.Item key={`/menu/categories`} icon={<AppstoreOutlined />}>
+                        <Link to={`/menu/categories`}>Về cửa hàng</Link>
+                    </Menu.Item>
                 </Menu>
             </Sider>
 
@@ -69,7 +75,7 @@ function EmployeeFeature(props) {
                     )}
 
                     <div className="custom-site-content__user">
-                        <UserOutlined style={{fontSize: "1.25rem"}} id="dashboard-user" />
+                        <UserOutlined style={{ fontSize: "1.25rem" }} id="dashboard-user" />
                         <div className="custom-site-content__dropdown">
                             <span
                                 onClick={() => {

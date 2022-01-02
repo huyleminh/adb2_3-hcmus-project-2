@@ -25,4 +25,14 @@ export default class AuthService {
 
         return true;
     }
+
+    static getUserRole() {
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        if (!user || !user.role || !user.access_token) {
+            return 0;
+        }
+
+        return user.role;
+    }
 }

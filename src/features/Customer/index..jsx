@@ -23,7 +23,7 @@ function CustomerFeature(props) {
                     <Redirect exact from="/" to="/menu" />
 
                     <Route path={`/menu`} component={MenuFeature} />
-                    <Route path="/profile" component={ProfileFeature} />
+                    <PrivateRoute path="/profile" component={ProfileFeature} />
                     <Route exact path="/cart" component={CartFeature} />
                     <PrivateRoute exact path="/checkout" component={CheckoutFeature} />
 

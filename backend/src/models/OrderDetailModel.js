@@ -10,11 +10,11 @@ export default class OrderDetailModel {
                     .select(
                         { productId: "SanPham.MaSP" },
                         { productName: "SanPham.TenSP" },
-                        { srcImage: "SanPham.HinhAnh" },
+                        { imageLink: "SanPham.HinhAnh" },
                         { quantity: "SPHoaDon.SoLuongMua" },
                         { price: "SPHoaDon.GiaBan" },
                     )
-                
+
                 resolve(resultSet)
             } catch (error) {
                 reject(error)
